@@ -1,5 +1,3 @@
-library(shiny)
-
 ModifiedChannelThresholds <- function(...) {
   ui <- fluidPage(
     titlePanel("Biointegrity and Biostimulatory Thresholds for Modified Channels and Other Classes of Streams"),

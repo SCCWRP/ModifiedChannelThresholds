@@ -1,4 +1,10 @@
+library(ggplot2)
+library(shiny)
+
 data(threshold_static)
+data(obs_points_df)
+data(raw_dat)
+
 
 class_choices <- threshold_static |> 
   dplyr::distinct(Class_fullname) |> 
