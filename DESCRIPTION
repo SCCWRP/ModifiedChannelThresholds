@@ -15,6 +15,7 @@ Imports:
     dplyr,
     DT,
     ggplot2,
+    pkgload,
     readr,
     shiny,
     shinyWidgets

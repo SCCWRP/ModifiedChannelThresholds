@@ -4,12 +4,23 @@ library(shiny)
 data(threshold_static)
 data(obs_points_df)
 data(raw_dat)
+data(channel_cross_walk)
 
-
-class_choices <- threshold_static |> 
-  dplyr::distinct(Class_fullname) |> 
-  dplyr::filter(Class_fullname != "Wadeable streams") |> 
+region_choices <- channel_cross_walk |>
+  dplyr::distinct(Region) |>
   dplyr::pull()
+
+flow_duration_choices <- channel_cross_walk |>
+  dplyr::distinct(FlowDuration) |>
+  dplyr::pull()
+
+
+modification_type_choices <- list(`Natural or minimally modified channel` = "Natural",
+                                  `Hard-bottom engineered channel` = "HB",
+                                  `Soft-bottom engineered channel with 2 hardened sides` = "SB2",
+                                  `Soft-bottom engineered channel with 1 hardened side` = "SB1",
+                                  `Soft-bottom engineered channel with 0 hardened sides` = "SB0",
+                                  `Constructed Channel` = "CC")
 
 stringency_choices <- threshold_static |> 
   dplyr::distinct(Stringency) |> 
@@ -17,3 +28,6 @@ stringency_choices <- threshold_static |>
   dplyr::pull()
 
 indicator_choices <- c("ASCI_D", "ASCI_H", "CSCI", "TN", "TP", "Chl-a", "AFDM", "% cover")
+
+# channel_cross_walk <- readxl::read_excel("data/ChannelClassCrosswalk.xlsx")
+# channel_cross_walk <- channel_cross_walk |> mutate(across(4:12, ~case_when(. == "Yes" ~ 1, . == "No" ~ 0)))

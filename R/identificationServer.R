@@ -2,10 +2,103 @@ library(ggplot2)
 
 identificationServer <- function(id) {
   moduleServer(id, function(input, output, session) {
+    
+    synthesize_thresholds_plotdata <- function(
+      classes,
+      thresholds_df,
+      indicators = c("CSCI","ASCI_D","ASCI_H","TN","TP","Chl-a","AFDM","% cover"),
+      stringency="Intermediate") {
+      
+      
+      thresh_dat <- thresholds_df |>
+        dplyr::filter(Stringency==stringency) |>
+        dplyr::filter(Class %in% c("Wadeable streams",classes)) |>
+        dplyr::filter(Indicator %in% indicators) |>
+        dplyr::mutate(Index = dplyr::case_when(Indicator_Type=="Biointegrity"~Indicator,
+                                 Approach=="Response"~Response_model_index,
+                                 T~"Not applicable"))
+      thresh_dat_sum<-thresh_dat |>
+        dplyr::filter(!Flagged) |>
+        dplyr::group_by(Indicator) |>
+        dplyr::summarise(Threshold_mean= mean(Threshold_value, na.rm=T))
+      thresholds_plotdata <- list(thresh_dat, thresh_dat_sum)
+      thresholds_plotdata
+    }
+    
+    
+    synthesize_thresholds_obs_plot<-function(
+      classes,
+      thresholds_df,
+      obs_data,
+      indicators = c("CSCI","ASCI_D","ASCI_H","TN","TP","Chl-a","AFDM","% cover"),
+      stringency="Intermediate") {
+      
+      obs_data <- obs_data |>
+        dplyr::select(Indicator, Observed_value) |>
+        dplyr::filter(Indicator %in%  indicators) |>
+        dplyr::mutate(Indicator=factor(Indicator, levels=c("CSCI","ASCI_D","ASCI_H","TN","TP","Chl-a","AFDM","% cover")))
+      
+      thresholds_plotdata <- synthesize_thresholds_plotdata(classes=classes, thresholds_df=thresholds_df, indicators=indicators, stringency = stringency) 
+      xdf <- obs_data |>
+        dplyr::rename(Value=Observed_value) |>
+        dplyr::mutate(DataType="Observed value") |>
+        dplyr::bind_rows(
+          thresholds_plotdata[[2]] |>
+            dplyr::rename(Value=Threshold_mean) |>
+            dplyr::mutate(DataType="Mean of thresholds")
+        )
+      multiple_thresholds<-thresholds_plotdata[[1]] |>
+        dplyr::filter(!Flagged) |>
+        dplyr::mutate(ClassIndicator = paste0(Class, Indicator)) |>
+        dplyr::group_by(ClassIndicator) |>
+        dplyr::tally() |>
+        dplyr::ungroup()|>
+        dplyr::filter(n>1) 
+      
+      ydf<-thresholds_plotdata[[1]] |>
+        dplyr::mutate(ClassIndicator = paste0(Class, Indicator))
+      ggplot(data=ydf, 
+             aes(x=Class, y=Threshold_value))+
+        geom_point(aes(fill=Approach4, shape=Index, 
+                       size=Flagged),
+                   position=position_dodge(width=0))+
+        stat_summary(data= ydf |> 
+                       dplyr::filter(!Flagged) |>
+                       dplyr::filter(ClassIndicator %in% multiple_thresholds$ClassIndicator), fun.y="mean", geom="crossbar", size=.25)+
+        geom_hline(data=xdf, aes(yintercept=Value, color=DataType))+
+        scale_color_manual(values=c("black","violet"), name="", labels=c("Mean of unflagged thresholds\n(Within or across classes)","Observed value"))+
+        facet_wrap(~Indicator, scales="free", ncol=2)+
+        scale_shape_manual(values=c(24,25,22, 21), name="Response model index")+
+        scale_fill_manual(values=c("#e41a1c","#377eb8","#33a02c","#b2df8a"), name="Approach")+
+        scale_size_manual(values=c(2,1), name="Flagged?", labels=c("No","Yes"))+
+        theme_bw()+
+        coord_flip()+
+        guides(shape=guide_legend(override.aes = list(fill="gray", size=2), order=2),
+               fill=guide_legend(override.aes = list(shape=21, size=2), order=1),
+               size=guide_legend(order=3),
+               color=guide_legend(order=4)
+        )+
+        theme(legend.position = "bottom",
+              legend.direction = "vertical")+
+        xlab("")+ylab("")
+    }
+
+    selected_classes <- reactive({
+      channel_cross_walk |>
+        dplyr::filter(
+          Region == input$Region,
+          FlowDuration == input$Flow_Dur,
+          ModificationStatus == input$Mod_Status
+        ) |>
+        dplyr::select(where(~ . == 'Yes')) |>
+        names()
+    })
+    
+        
     threshold_data <- reactive({
       threshold_static |>
         dplyr::filter(
-          Class_fullname %in% c("Wadeable streams", input$Class_fullname),
+          Class %in% selected_classes(),
           Stringency %in% input$Stringency,
           Indicator %in% input$Indicator
         ) |>
@@ -19,10 +112,10 @@ identificationServer <- function(id) {
             Approach == "Response" ~ paste0(Class," - ",Approach," (",Response_model_form,", ", Response_model_index,")"),
             T ~ "OTHER"
           ),
-          Approach4 = factor(Approach4, 
-                             levels = Approach4 |>
-                               unique() |>
-                               rev())
+          Approach4 = factor(Approach4, levels = Approach4 |> 
+                                                   unique() |>
+                                                   rev()),
+          Flagged = !is.na(Flag)
         ) |>
         dplyr::arrange(
           Class,
@@ -31,7 +124,7 @@ identificationServer <- function(id) {
           Response_model_index
         )
     }) |>
-      bindEvent(input$Class_fullname, input$Stringency, input$Indicator, input$submit)
+      bindEvent(input$Region, input$Mod_Status, input$Flow_Dur, input$Stringency, input$Indicator, input$submit)
     
     
     my_thresh_df <- reactive({
@@ -87,6 +180,25 @@ identificationServer <- function(id) {
       assessment_plot()
     }) |>
       bindEvent(input$submit, input$clear)
+    
+    
+    assessment_plot_detail <- reactive({
+      thresholds_df <- threshold_static |>
+        dplyr::mutate(Indicator = factor(Indicator, levels = unique(Indicator)),
+               Flagged = !is.na(Flag),
+               Approach4 = dplyr::case_when(Approach=="Response"~paste0("Response (",Response_model_form,")"),
+                                     T~Approach))
+      
+      
+      synthesize_thresholds_obs_plot(classes = selected_classes(), thresholds_df = thresholds_df, obs_data = obs_table$data, indicators = input$Indicator, stringency = input$Stringency)
+    })
+    
+    output$assessment_plot_detail <- renderPlot({
+      assessment_plot_detail()
+    }) |>
+      bindEvent(input$submit, input$clear)
+    
+    
     
     
     obs_table <- reactiveValues(data = {
@@ -150,7 +262,7 @@ identificationServer <- function(id) {
           Threshold_value,
           Flag
         )
-    }) |>
+    }, selection = 'none') |>
       bindEvent(input$submit)
     
     output$download_table <- downloadHandler(

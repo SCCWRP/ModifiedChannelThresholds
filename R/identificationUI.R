@@ -19,20 +19,29 @@ identificationUI <- function(id) {
         br(),
         HTML('<strong style="font-size:16px;color=#2f5496">Identify Thresholds</strong>'),
         br(),
-        "Identify the thresholds you wish to evaluate. Under “Class”, select the appropriate stream types (traditionally-derived thresholds for wadeable streams will be included with results). Multiple options may be selected. Under “Stringency” select whether you want to evaluate high-, intermediate-, or low-stringency thresholds (only one stringency may be selected). Under “Indicator”, select which biointegrity or biostimulatory thresholds you want to evaluate.",
+        HTML("Under <strong>Region</strong>, select the region of interest. <br> Under <strong>Flow Duration</strong>, select the appropriate class. <br> Under <strong>Modification Type</strong>, select the appropriate class. <br> Under <strong>Stringency</strong>, select the desired level of stringency (only one may be selected). <br> Under <strong>Indicator</strong>, select which biointegrity or biostimulatory indicators you wish to evaluate.<br>"),
         shinyWidgets::pickerInput(
-          NS(id, "Class_fullname"), 
-          label = "Class", 
-          choices = class_choices,
-          multiple = TRUE,
-          options = list(
-            `actions-box` = TRUE)
+          NS(id, "Region"), 
+          label = "Region", 
+          choices = region_choices,
+          selected = region_choices[1]
+        ),
+        shinyWidgets::pickerInput(
+          NS(id, "Flow_Dur"),
+          label = "Flow Duration", 
+          choices = flow_duration_choices,
+          selected = flow_duration_choices[1]
+        ),
+        shinyWidgets::pickerInput(
+          NS(id, "Mod_Status"),
+          label = "Modification Type", 
+          choices = modification_type_choices
         ),
         shinyWidgets::pickerInput(
           NS(id, "Stringency"),
           label = "Stringency", 
           choices = stringency_choices,
-          selected = stringency_choices |> dplyr::first()
+          selected = stringency_choices[1]
         ),
         shinyWidgets::pickerInput(
           NS(id, "Indicator"),
@@ -40,8 +49,7 @@ identificationUI <- function(id) {
           choices = indicator_choices,
           selected = indicator_choices,
           multiple = TRUE,
-          options = list(
-            `actions-box` = TRUE)
+          options = shinyWidgets::pickerOptions(actionsBox = TRUE)
         )
       ),
       column(
@@ -64,7 +72,10 @@ identificationUI <- function(id) {
           HTML('<strong style="font-size:16px;color=#2f5496">Comparison of observed values with selected thresholds</strong>'),
           br(),
           "Numbers in cells are the selected thresholds. Numbers in parentheses in the x-axis labels are the observed values. Color of the cell indicates whether the observed values passed or failed the threshold.",
-          plotOutput(NS(id, "assessment_plot"), width = "6.5in", height = "7.5in"),
+          tabsetPanel(
+            tabPanel(title = "Summary", plotOutput(NS(id, "assessment_plot"), width = "6.5in", height = "7.5in")),
+            tabPanel(title = "Detail", plotOutput(NS(id, "assessment_plot_detail"), width = "6.5in", height = "7.5in"))
+          ),
           ns = NS(id)
         )
       )
