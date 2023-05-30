@@ -79,7 +79,8 @@ identificationServer <- function(id) {
                color=guide_legend(order=4)
         )+
         theme(legend.position = "bottom",
-              legend.direction = "vertical")+
+              legend.direction = "vertical",
+              text = element_text(size = 14))+
         xlab("")+ylab("")
     }
 
@@ -96,7 +97,7 @@ identificationServer <- function(id) {
     
         
     threshold_data <- reactive({
-      threshold_static |>
+      thresholds |>
         dplyr::filter(
           Class %in% selected_classes(),
           Stringency %in% input$Stringency,
@@ -166,7 +167,8 @@ identificationServer <- function(id) {
         theme(legend.position = "bottom",
               panel.grid = element_blank(),
               panel.border = element_blank(),
-              axis.title.x = element_text(color="gray25"))
+              axis.title.x = element_text(color="gray25"),
+              text = element_text(size = 14))
       
       
       assessment_plot_cow <- cowplot::plot_grid(assessment_plot +
@@ -183,7 +185,7 @@ identificationServer <- function(id) {
     
     
     assessment_plot_detail <- reactive({
-      thresholds_df <- threshold_static |>
+      thresholds_df <- thresholds |>
         dplyr::mutate(Indicator = factor(Indicator, levels = unique(Indicator)),
                Flagged = !is.na(Flag),
                Approach4 = dplyr::case_when(Approach=="Response"~paste0("Response (",Response_model_form,")"),
@@ -202,7 +204,7 @@ identificationServer <- function(id) {
     
     
     obs_table <- reactiveValues(data = {
-      threshold_static |>
+      thresholds |>
         dplyr::distinct(Indicator_Type, Indicator) |>
         dplyr::arrange(Indicator_Type, match(Indicator, indicator_choices)) |>
         dplyr::mutate(

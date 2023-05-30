@@ -1,7 +1,7 @@
 library(ggplot2)
 library(shiny)
 
-data(threshold_static)
+data(thresholds)
 data(obs_points_df)
 data(raw_dat)
 data(channel_cross_walk)
@@ -22,7 +22,7 @@ modification_type_choices <- list(`Natural or minimally modified channel` = "Nat
                                   `Soft-bottom engineered channel with 0 hardened sides` = "SB0",
                                   `Constructed Channel` = "CC")
 
-stringency_choices <- threshold_static |> 
+stringency_choices <- thresholds |> 
   dplyr::distinct(Stringency) |> 
   dplyr::arrange(desc(Stringency)) |>
   dplyr::pull()
