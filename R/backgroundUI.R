@@ -23,14 +23,36 @@ backgroundUI <- function(id) {
           <h3 style="color:#2f5496">Biointegrity and Biostimulatory Indicators</h3>
         '
       ),
-      div(div(imageOutput(NS(id, "csci"), height = "100%"), "Photo credit: California Department of Fish and Wildlife", class = "innerImage", style = "width:137px"), class = "rightImage"),
-      div(div(imageOutput(NS(id, "asci"), height = "100%"), class = "innerImage"), class = "rightImage"),
+      #div(div(imageOutput(NS(id, "asci"), height = "100%"), class = "innerImage"), class = "rightImage"),
       HTML(
         '
           <h4 style="color:#2f5496">Biointegrity Indicators</h4>
           <p><strong>California Stream Condition Index (CSCI)</strong><br>The CSCI is the standard index to assess the ecological condition of wadeable streams in California using benthic macroinvertebrates (Mazor et al. 2016). It is a predictive index, meaning that it assesses condition by comparing observed benthic macroinvertebrate assemblage composition to the composition expected to occur at environmentally similar reference sites. CSCI scores close to 1 are considered to be in reference condition, whereas lower scores indicate degradation of ecological health. Although most of the reference sites used to calibrate the CSCI are perennial, many in southern California have subsequently been determined to be intermittent. Benthic macroinvertebrate samples should be collected by SWAMP-comparable protocols (e.g., Ode et al. 2016) for calculating CSCI scores.
+        '
+      ),
+      fluidRow(
+        column(5),
+        column(
+          2,
+          imageOutput(NS(id, "csci"), height = "100%")
+        ),
+        column(5)
+      ),
+      HTML(
+        '
           <p><strong>Algal Stream Condition Indices (ASCIs)</strong><br>California has two benthic algal indices for assessing wadeable streams: an index based on benthic diatoms (ASCI_D), and an index based on a hybrid of diatoms and soft-bodied algal taxa (ASCI_H; Theroux et al. 2020). Like the CSCI, the ASCIs are predictive indices. In general, the ASCIs are more sensitive to water quality degradation, whereas the CSCI is more sensitive to habitat degradation; however, all indices reflect the overall condition of streams and their response to both water and habitat quality. ASCI scores close to 1 are considered to be in reference condition, whereas lower scores indicate degradation of ecological health. Benthic algal samples should be collected by SWAMP-comparable protocols (e.g., Ode et al. 2016) for calculating ASCI scores.
-          <br>
+        '
+      ),
+      fluidRow(
+        column(5),
+        column(
+          2,
+          imageOutput(NS(id, "asci"), height = "100%")
+        ),
+        column(5)
+      ),
+      HTML(
+        '
           <h4 style="color:#2f5496">Biostimulatory Indicators</h4>
           <p><strong>Total Nitrogen (TN) and Total Phosphorus (TP)</strong><br> TN and TP are the most important nutrients driving growth rates in algae and higher plants. Consequently, TN and TP concentrations have very strong relationships with ASCI scores, as well as CSCI scores (Mazor et al. 2022). Concentrations of TN and TP should be measured in baseflow conditions and expressed in units of mg/l for use in this dashboard.
           <p><strong>Benthic Chlorophyll-a (Chl-a)</strong><br> Chl-a is one of the primary pigments used by algal taxa to conduct photosynthesis and convert sunlight into energy. Chl-a should be measured using SWAMP-comparable protocols (e.g., Ode et al. 2016) and expressed in units of mg/m2 for use in this dashboard.
