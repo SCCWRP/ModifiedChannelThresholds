@@ -1,6 +1,9 @@
 library(ggplot2)
 library(shiny)
 
+source('data-raw/channel_cross_walk.R')
+source('data-raw/thresholds.R')
+
 data(thresholds)
 data(obs_points_df)
 data(raw_dat)
