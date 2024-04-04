@@ -1,16 +1,14 @@
 backgroundUI <- function(id) {
   fluidPage(
     tags$head(tags$style('.hangingIndent {padding-left: 22px; text-indent: -22px}')),
-    column(
-      2
-    ),
+    column(2),
     column(
       8,
       HTML(
         '
           <h3 style="color:#2f5496">Introduction</h3>
           <p>Watershed managers in California face a number of challenges when it comes to applying bioassessment tools (such as biointegrity indices or thresholds for biostimulatory substances) on certain types of streams. These challenges include suspicions about the applicability of tools in regions or stream types that differ from reference data sets used to calibrate tools (e.g., Central Valley Floor streams, intermittent streams), as well as concerns about the ability to achieve reference-based thresholds in channels that have been modified for flood protection or water conveyance. These issues are particularly relevant in the Central Valley, although they pertain to watershed managers in all parts of California.
-          <p>This dashboard is intended to help managers identify thresholds for biointegrity and biostimulatory indicators for classes of streams where standard approaches may not be appropriate, either due to uncertainty about their validity or doubts about the feasibility of achieving these thresholds. Details on how these thresholds were derived can be found in SCCWRP Technical Report #1367.
+          <p>This dashboard is intended to help managers explore thresholds for biointegrity and biostimulatory indicators for classes of streams where standard approaches may not be appropriate, either due to uncertainty about their validity or doubts about the feasibility of achieving these thresholds. Details on how these thresholds were identified can be found in SCCWRP Technical Report #1367. The use of the thresholds in this dashboard and in Technical Report #1367 is provided for informational purposes, and it is not intended to endorse the use of thresholds or waterbody classifications in policy or regulatory programs.
           <p>This dashboard (Version 1.1) was created by Raphael Mazor, Nicholas Lombardo, and Adriana Le Compte-Santiago. For more information, please contact Raphael Mazor (raphaelm@sccwrp.org).
           <h3 style="color:#2f5496">Biointegrity and Biostimulatory Indicators</h3>
         '
@@ -23,10 +21,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(5),
-        column(
-          2,
-          imageOutput(NS(id, "csci"), height = "100%")
-        ),
+        column(2, imageOutput(NS(id, "csci"), height = "100%")),
         column(5)
       ),
       HTML(
@@ -36,10 +31,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(5),
-        column(
-          2,
-          imageOutput(NS(id, "asci"), height = "100%")
-        ),
+        column(2, imageOutput(NS(id, "asci"), height = "100%")),
         column(5)
       ),
       HTML(
@@ -54,10 +46,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "perc_cover"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "perc_cover"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -71,10 +60,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(4),
-        column(
-          4,
-          imageOutput(NS(id, "ws"), height = "100%")
-        ),
+        column(4, imageOutput(NS(id, "ws"), height = "100%")),
         column(4)
       ),
       HTML(
@@ -86,10 +72,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "rfi"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "rfi"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -101,10 +84,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(4),
-        column(
-          4,
-          imageOutput(NS(id, "sfi"), height = "100%")
-        ),
+        column(4, imageOutput(NS(id, "sfi"), height = "100%")),
         column(4)
       ),
       HTML(
@@ -116,10 +96,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "cvf"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "cvf"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -131,10 +108,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "hb"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "hb"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -146,10 +120,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "sb2"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "sb2"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -161,10 +132,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "sb1"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "sb1"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -176,10 +144,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "sb0"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "sb0"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -191,17 +156,14 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "cc"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "cc"), height = "100%")),
         column(3)
       ),
       HTML(
         '
           <br>
           <h3 style="color:#2f5496">Approaches to Identifying Thresholds</h3>
-          <p>There are three general approaches to identifying thresholds for biointegrity indicators. A fourth approach is also appropriate for identifying thresholds for biostimulatory indicators.
+          <p>Technical Report #1367 describes three approaches to identifying thresholds for biointegrity indicators. A fourth approach for identifying thresholds for biostimulatory indicators is also described.
           <p><strong>Threshold Stringency</strong><br>This dashboard presents high, intermediate, and low-stringency numbers for all types of thresholds. For biointegrity indicators (e.g., CSCI), high stringency thresholds have higher numeric values than low stringency thresholds. For biostimulatory indicators (e.g., TN), high stringency thresholds have lower numeric values than low stringency thresholds. 
           <p><strong>Reference Thresholds</strong><br>Undisturbed streams exhibit a range of values for biointegrity and biostimulatory indicators. Thresholds based on these statistical distributions are useful for distinguishing natural variability from impacts related to human activity. Numbers representing the low end of the distribution of biointegrity scores (such as the 1st, 10th, or 30th percentiles) or high end of biostimulatory indicator concentrations (such as the 70th, 90th, or 99th percentiles) are usually used to identify reference-based thresholds (U.S. Environmental Protection Agency 2000, Hawkins et al. 2010). Selecting less stringent reference-based thresholds (e.g., the 1st or 99th percentiles) reflects a high confidence in the quality of the reference sites from which data were collected, or a low tolerance for misidentifying a site as having poor conditions. Conversely, selecting more stringent thresholds (e.g., 30th or 70th percentiles) is appropriate if many reference sites are influenced by human activity, or if there is a low tolerance for misidentifying a site as having good conditions.
           <br>
@@ -209,10 +171,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "ref_thresholds"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "ref_thresholds"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -226,10 +185,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "best_thresholds"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "best_thresholds"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -241,10 +197,7 @@ backgroundUI <- function(id) {
       ),
       fluidRow(
         column(3),
-        column(
-          6,
-          imageOutput(NS(id, "res_thresholds"), height = "100%")
-        ),
+        column(6, imageOutput(NS(id, "res_thresholds"), height = "100%")),
         column(3)
       ),
       HTML(
@@ -264,8 +217,6 @@ backgroundUI <- function(id) {
         '
       )
     ),
-    column(
-      2
-    )
+    column(2)
   )
 }

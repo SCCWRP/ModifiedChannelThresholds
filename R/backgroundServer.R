@@ -34,13 +34,13 @@ backgroundServer <- function(id) {
       list(src = "figures/sb0.jpg", width = "100%", height = "auto")
     }, deleteFile = FALSE)
     output$ref_thresholds <- renderImage({
-      list(src = "figures/ref_thresholds.png", width = "100%", height = "auto")
+      list(src = "figures/new_ref_thresholds.png", width = "100%", height = "auto")
     }, deleteFile = FALSE)
     output$res_thresholds <- renderImage({
       list(src = "figures/res_thresholds.png", width = "100%", height = "auto")
     }, deleteFile = FALSE)
     output$best_thresholds <- renderImage({
-      list(src = "figures/best_thresholds.png", width = "100%", height = "auto")
+      list(src = "figures/new_best_thresholds.png", width = "100%", height = "auto")
     }, deleteFile = FALSE)
   })
 }
