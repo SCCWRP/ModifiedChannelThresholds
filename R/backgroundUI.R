@@ -1,14 +1,6 @@
 backgroundUI <- function(id) {
   fluidPage(
-    tags$head(
-      tags$style(
-        '
-          .rightImage {float:right; display:block; clear:right; outline:1px solid gray; margin-bottom:.6rem}
-          .innerImage {margin:.6rem}
-          .hangingIndent {padding-left: 22px; text-indent: -22px}
-        '
-      )
-    ),
+    tags$head(tags$style('.hangingIndent {padding-left: 22px; text-indent: -22px}')),
     column(
       2
     ),
