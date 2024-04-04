@@ -18,12 +18,11 @@ backgroundUI <- function(id) {
         '
           <h3 style="color:#2f5496">Introduction</h3>
           <p>Watershed managers in California face a number of challenges when it comes to applying bioassessment tools (such as biointegrity indices or thresholds for biostimulatory substances) on certain types of streams. These challenges include suspicions about the applicability of tools in regions or stream types that differ from reference data sets used to calibrate tools (e.g., Central Valley Floor streams, intermittent streams), as well as concerns about the ability to achieve reference-based thresholds in channels that have been modified for flood protection or water conveyance. These issues are particularly relevant in the Central Valley, although they pertain to watershed managers in all parts of California.
-          <p>This dashboard is intended to help managers identify thresholds for biointegrity and biostimulatory indicators for classes of streams where standard approaches may not be appropriate, either due to uncertainty about their validity or doubts about the feasibility of achieving these thresholds. Details on how these thresholds were derived can be found in SCCWRP Technical Report #XXXX.
+          <p>This dashboard is intended to help managers identify thresholds for biointegrity and biostimulatory indicators for classes of streams where standard approaches may not be appropriate, either due to uncertainty about their validity or doubts about the feasibility of achieving these thresholds. Details on how these thresholds were derived can be found in SCCWRP Technical Report #1367.
           <p>This dashboard (Version 1.1) was created by Raphael Mazor, Nicholas Lombardo, and Adriana Le Compte-Santiago. For more information, please contact Raphael Mazor (raphaelm@sccwrp.org).
           <h3 style="color:#2f5496">Biointegrity and Biostimulatory Indicators</h3>
         '
       ),
-      #div(div(imageOutput(NS(id, "asci"), height = "100%"), class = "innerImage"), class = "rightImage"),
       HTML(
         '
           <h4 style="color:#2f5496">Biointegrity Indicators</h4>
@@ -73,7 +72,7 @@ backgroundUI <- function(id) {
         '
           <br>
           <h3 style="color:#2f5496">Classes of Streams</h3>
-          <p>See SCCWRP Technical Report #XXXX for more details about stream classes.
+          <p>See SCCWRP Technical Report #1367 for more details about stream classes.
           <p><strong>Wadeable Streams</strong><br> Wadeable Streams are those where standard bioassessment protocols may be implemented (e.g., Ode et al. 2016). As defined in Ode et al. (2016), assessment reaches are typically between 150 and 250 m (but may be as short as 100 m), have continuous surface water throughout the reach, and have visible flow for at least short sections of the reach. At least half the reach should be less than 1 m deep, and half should be at least 1 m wide. This is the “standard” class of streams for which most bioassessment tools are intended.
           <br>
         '

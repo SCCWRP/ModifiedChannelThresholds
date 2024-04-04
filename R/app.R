@@ -1,6 +1,6 @@
 ModifiedChannelThresholds <- function(...) {
   ui <- fluidPage(
-    titlePanel("Biointegrity and Biostimulatory Thresholds for Modified Channels and Other Classes of Streams"),
+    titlePanel("[Draft] Biointegrity and Biostimulatory Thresholds for Modified Channels and Other Classes of Streams"),
     tabsetPanel(
       tabPanel("Background", backgroundUI("bg")),
       tabPanel("Biostimulatory Response Models", responseModelsUI("rs")),

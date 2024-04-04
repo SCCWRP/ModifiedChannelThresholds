@@ -4,7 +4,7 @@ identificationUI <- function(id) {
     fluidRow(
       column(
         12,
-        "This dashboard allows users to query biointegrity and biostimulatory thresholds presented in SCCWRP TR####. In addition, it allows users to compare observed data to these thresholds, facilitating assessments of modified channels and other special classes of streams in California.",
+        "This dashboard allows users to query biointegrity and biostimulatory thresholds presented in SCCWRP TR1367. In addition, it allows users to compare observed data to these thresholds, facilitating assessments of modified channels and other special classes of streams in California.",
         br(),
         conditionalPanel(
           "input.submit",

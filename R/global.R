@@ -31,6 +31,3 @@ stringency_choices <- thresholds |>
   dplyr::pull()
 
 indicator_choices <- c("ASCI_D", "ASCI_H", "CSCI", "TN", "TP", "Chl-a", "AFDM", "% cover")
-
-# channel_cross_walk <- readxl::read_excel("data/ChannelClassCrosswalk.xlsx")
-# channel_cross_walk <- channel_cross_walk |> mutate(across(4:12, ~case_when(. == "Yes" ~ 1, . == "No" ~ 0)))
