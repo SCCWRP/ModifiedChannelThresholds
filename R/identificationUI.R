@@ -4,7 +4,7 @@ identificationUI <- function(id) {
     fluidRow(
       column(
         12,
-        "This dashboard allows users to query biointegrity and biostimulatory thresholds presented in SCCWRP TR1367. In addition, it allows users to compare observed data to these thresholds, facilitating assessments of modified channels and other special classes of streams in California.",
+        "This dashboard allows users to query biointegrity and eutrophication thresholds presented in SCCWRP TR1367. In addition, it allows users to compare observed data to these thresholds, facilitating assessments of modified channels and other special classes of streams in California.",
         br(),
         conditionalPanel(
           "input.submit",
@@ -19,7 +19,7 @@ identificationUI <- function(id) {
         br(),
         HTML('<strong style="font-size:16px;color=#2f5496">Identify Thresholds</strong>'),
         br(),
-        HTML("Under <strong>Region</strong>, select the region of interest. <br> Under <strong>Flow Duration</strong>, select the appropriate class. <br> Under <strong>Modification Type</strong>, select the appropriate class. <br> Under <strong>Stringency</strong>, select the desired level of stringency (only one may be selected). <br> Under <strong>Indicator</strong>, select which biointegrity or biostimulatory indicators you wish to evaluate.<br>"),
+        HTML("Under <strong>Region</strong>, select the region of interest. <br> Under <strong>Flow Duration</strong>, select the appropriate class. <br> Under <strong>Modification Type</strong>, select the appropriate class. <br> Under <strong>Stringency</strong>, select the desired level of stringency (only one may be selected). <br> Under <strong>Indicator</strong>, select which biointegrity or eutrophication indicators you wish to evaluate.<br>"),
         shinyWidgets::pickerInput(
           NS(id, "Region"), 
           label = "Region", 

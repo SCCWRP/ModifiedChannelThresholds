@@ -3,13 +3,14 @@ responseModelsServer <- function(id) {
     #function to calculate goal
     thresh_dat <- reactive({
       raw_dat |>
+        dplyr::rename(`Eutrophication Variable` = BiostimVar) |>
         dplyr::filter(Stressor %in% input$biostim) |> 
         dplyr::filter(Index %in% input$index) |> 
         dplyr::filter(Fit>=input$goal) |> 
         dplyr::group_by(Stressor,Index) |>
         dplyr::slice_max(BiostimValue, n=1) |>
         dplyr::ungroup() |>
-        dplyr::rename(Threshold_candidate=BiostimValue, 
+        dplyr::rename(`Threshold Candidate`=BiostimValue, 
                IndexScore_predicted=Fit,
                IndexScore_predicted_se=SE) |>
         dplyr::mutate(IndexScore_predicted_l95=IndexScore_predicted-IndexScore_predicted_se*1.96,

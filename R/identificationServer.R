@@ -104,6 +104,7 @@ identificationServer <- function(id) {
           Indicator %in% input$Indicator
         ) |>
         dplyr::mutate(
+          Indicator_Type = stringr::str_replace(Indicator_Type, "Biostimulatory", "Eutrophication"),
           Class = as.factor(Class),
           Approach = as.factor(Approach),
           Response_model_form = as.factor(Response_model_form),
@@ -131,20 +132,21 @@ identificationServer <- function(id) {
     my_thresh_df <- reactive({
       threshold_data() |>
         dplyr::inner_join(obs_table$data) |>
-        dplyr::mutate(Threshold_pass = dplyr::case_when(
-          is.na(Observed_value)~"No data",
-          is.na(Threshold_value)~"No threshold identified",
-          Indicator_Type == "Biointegrity" & Threshold_value > Observed_value & is.na(Flag) ~ "Fails",
-          Indicator_Type == "Biointegrity" & Threshold_value <= Observed_value & is.na(Flag) ~ "Passes",
-          Indicator_Type == "Biointegrity" & Threshold_value > Observed_value & !is.na(Flag) ~ "Fails but flagged",
-          Indicator_Type == "Biointegrity" & Threshold_value <= Observed_value & !is.na(Flag) ~ "Passes flagged",
-          
-          Indicator_Type == "Biostimulatory" & Threshold_value < Observed_value & is.na(Flag) ~ "Fails",
-          Indicator_Type == "Biostimulatory" & Threshold_value >= Observed_value & is.na(Flag) ~ "Passes",
-          Indicator_Type == "Biostimulatory" & Threshold_value < Observed_value & !is.na(Flag) ~ "Fails but flagged",
-          Indicator_Type == "Biostimulatory" & Threshold_value >= Observed_value & !is.na(Flag) ~ "Passes flagged",
-          
-          T~"Other"),
+        dplyr::mutate(
+          Threshold_pass = dplyr::case_when(
+            is.na(Observed_value)~"No data",
+            is.na(Threshold_value)~"No threshold identified",
+            Indicator_Type == "Biointegrity" & Threshold_value > Observed_value & is.na(Flag) ~ "Fails",
+            Indicator_Type == "Biointegrity" & Threshold_value <= Observed_value & is.na(Flag) ~ "Passes",
+            Indicator_Type == "Biointegrity" & Threshold_value > Observed_value & !is.na(Flag) ~ "Fails but flagged",
+            Indicator_Type == "Biointegrity" & Threshold_value <= Observed_value & !is.na(Flag) ~ "Passes flagged",
+            
+            Indicator_Type == "Eutrophication" & Threshold_value < Observed_value & is.na(Flag) ~ "Fails",
+            Indicator_Type == "Eutrophication" & Threshold_value >= Observed_value & is.na(Flag) ~ "Passes",
+            Indicator_Type == "Eutrophication" & Threshold_value < Observed_value & !is.na(Flag) ~ "Fails but flagged",
+            Indicator_Type == "Eutrophication" & Threshold_value >= Observed_value & !is.na(Flag) ~ "Passes flagged",
+            
+            T~"Other"),
           Threshold_pass = factor(Threshold_pass,
                                   levels=c("Passes","Passes flagged",
                                            "Fails","Fails but flagged",
@@ -205,6 +207,7 @@ identificationServer <- function(id) {
     
     obs_table <- reactiveValues(data = {
       thresholds |>
+        dplyr::mutate(Indicator_Type = stringr::str_replace(Indicator_Type, "Biostimulatory", "Eutrophication")) |>
         dplyr::distinct(Indicator_Type, Indicator) |>
         dplyr::arrange(Indicator_Type, match(Indicator, indicator_choices)) |>
         dplyr::mutate(
