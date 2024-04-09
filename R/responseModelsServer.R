@@ -35,11 +35,11 @@ responseModelsServer <- function(id) {
         facet_grid(Index~Stressor, scales="free_x")+
         xlab("")+ylab("Index score")+
         geom_hline(data=thresh_dat(), aes(yintercept=IndexScore_predicted), color="red", linetype="dashed", linewidth=1)+
-        geom_vline(data=thresh_dat(), aes(xintercept=Threshold_candidate), color="red", linetype="dashed", linewidth=1)+
+        geom_vline(data=thresh_dat(), aes(xintercept=`Threshold Candidate`), color="red", linetype="dashed", linewidth=1)+
         theme_bw()+
         geom_label(data = thresh_dat(),
                    label.size=NA,
-                   mapping = aes(x = Inf, y = Inf, label = Threshold_candidate),
+                   mapping = aes(x = Inf, y = Inf, label = `Threshold Candidate`),
                    hjust   = 1,
                    vjust   = 1
         )
