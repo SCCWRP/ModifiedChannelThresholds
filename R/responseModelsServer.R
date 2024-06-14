@@ -13,8 +13,21 @@ responseModelsServer <- function(id) {
         dplyr::rename(`Threshold Candidate`=BiostimValue, 
                IndexScore_predicted=Fit,
                IndexScore_predicted_se=SE) |>
-        dplyr::mutate(IndexScore_predicted_l95=IndexScore_predicted-IndexScore_predicted_se*1.96,
-               IndexScore_predicted_u95=IndexScore_predicted+IndexScore_predicted_se*1.96)
+        dplyr::mutate(
+          IndexScore_predicted_l95 = IndexScore_predicted - IndexScore_predicted_se * 1.96,
+          IndexScore_predicted_u95 = IndexScore_predicted + IndexScore_predicted_se * 1.96,
+          `Threshold Candidate` = dplyr::case_when(
+            Stressor == 'Total N' ~ round(`Threshold Candidate`, 3),
+            Stressor == 'Total P' ~ round(`Threshold Candidate`, 3),
+            Stressor == 'Chl-a' ~ round(`Threshold Candidate`, 1),
+            Stressor == 'AFDM' ~ round(`Threshold Candidate`, 1),
+            Stressor == '% cover' ~ round(`Threshold Candidate`)
+          )
+        ) |>
+        dplyr::select(
+          `Eutrophication Variable`, Stressor, `Threshold Candidate`, Index, 
+          IndexScore_predicted, IndexScore_predicted_se, IndexScore_predicted_l95, IndexScore_predicted_u95
+        )
     })
     #function to render table using above function 
     output$table <- DT::renderDataTable({
