@@ -32,20 +32,35 @@ identificationServer <- function(id) {
             Indicator_Type == "Eutrophication" & Threshold_value >= Observed_value & !is.na(Flag) ~ "Passes flagged",
             .default = "Other"
           ),
-          obs_label = paste0(Indicator, "\n(", Observed_value, ")"),
           Threshold_pass = factor(
             Threshold_pass, 
             levels = c("Passes", "Passes flagged", "Fails", "Fails but flagged", "No threshold identified", "No data")
           ),
-          Approach4 = factor(Approach4, levels = rev(unique(Approach4)))
+          Approach4 = factor(Approach4, levels = rev(unique(Approach4))),
+          Threshold_value = case_when(
+            Indicator_Type == "Biointegrity" ~ sprintf('%.2f', Threshold_value),
+            Indicator == "% cover" ~ sprintf('%.0f', Threshold_value),
+            Indicator %in% c("AFDM", "Chl-a") ~ sprintf('%.1f', Threshold_value),
+            Indicator %in% c("TN", "TP") ~ sprintf('%.3f', Threshold_value),
+            .default = sprintf('%.1f', Threshold_value)
+          ),
+          Threshold_value = stringr::str_remove_all(Threshold_value, "NA"),
+          Observed_value = case_when(
+            Indicator %in% c("CSCI", "ASCI_D", "ASCI_H") ~ sprintf('%.2f', Observed_value),
+            Indicator == "% cover" ~ sprintf('%.0f', Observed_value),
+            Indicator %in% c("AFDM", "Chl-a") ~ sprintf('%.1f', Observed_value),
+            Indicator %in% c("TN", "TP") ~ sprintf('%.3f', Observed_value),
+            .default = sprintf('%.1f', Observed_value)
+          ),
+          obs_label = paste0(Indicator, "\n(", Observed_value, ")")
         )
       
       threshold_colors <- c("#1f78b4", "#a6cee3", "#e31a1c", "#cab2d6", "#ff7f00", "#fdbf6f")
       assessment_plot <- ggplot(data = my_thresh_df, aes(x = obs_label, y = Approach4)) +
-        geom_tile(aes(fill = Threshold_pass), color = "white") +
+        geom_tile(aes(fill = Threshold_pass), color = "white", show.legend = TRUE) +
         geom_text(aes(label = Threshold_value)) +
+        scale_fill_manual(name = "Threshold", values = threshold_colors, drop = F) +
         facet_wrap(~ Indicator_Type, ncol = 1, scales = "free", drop = T) +
-        scale_fill_manual(values = threshold_colors, name = "Threshold", drop = F) +
         labs(y = "", x = "Indicator\n(Observed value)") +
         theme_bw() +
         theme(
@@ -185,7 +200,11 @@ identificationServer <- function(id) {
             Indicator == "% cover" ~ "Percent algal cover on the streambed (% cover)"
           )
         )
-    }, editable = list(target = "cell", disable = list(columns = c(1, 2, 3))), options = list(dom = 't'), selection = 'none') |>
+      }, 
+      editable = list(target = "cell", disable = list(columns = c(1, 2, 3))), 
+      options = list(dom = 't'), 
+      selection = 'none'
+    ) |>
       bindEvent(obs_table$data)
     
     
