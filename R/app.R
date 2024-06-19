@@ -7,6 +7,9 @@
 #'
 #' @import bslib
 ModifiedChannelThresholds <- function(...) {
+  ggplot2::theme_set(ggplot2::theme_bw(base_size = 16))
+  thematic::thematic_shiny(font = "auto")
+  
   ui <- page_navbar(
     title = "ModifiedChannelThresholds",
     nav_panel("Background", backgroundUI("bg")),
