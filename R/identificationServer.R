@@ -62,7 +62,6 @@ identificationServer <- function(id) {
         scale_fill_manual(name = "Threshold", values = threshold_colors, drop = F) +
         facet_wrap(~ Indicator_Type, ncol = 1, scales = "free", drop = T) +
         labs(y = "", x = "Indicator\n(Observed value)") +
-        theme_bw() +
         theme(
           legend.position = "bottom",
           panel.grid = element_blank(),
@@ -114,7 +113,6 @@ identificationServer <- function(id) {
         scale_shape_manual(values = c(24, 25, 22, 21), name = "Response model index") +
         scale_fill_manual(values = c("#e41a1c", "#377eb8", "#33a02c", "#b2df8a"), name = "Approach") +
         scale_size_manual(values = c(2, 1), name = "Flagged?", labels = c("No", "Yes")) +
-        theme_bw() +
         coord_flip() +
         guides(
           fill = guide_legend(override.aes = list(shape = 21, size = 2), order = 1),
