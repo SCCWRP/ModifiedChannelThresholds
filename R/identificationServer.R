@@ -201,15 +201,17 @@ identificationServer <- function(id) {
           )
         )
       }, 
-      editable = list(target = "cell", disable = list(columns = c(1, 2, 3))), 
-      options = list(dom = 't'), 
-      selection = 'none'
+      editable = list(target = "cell", disable = list(columns = c(0, 1, 2))), 
+      options = list(dom = 't', ordering = FALSE), 
+      rownames = FALSE,
+      selection = 'none',
+      colnames = c("Indicator Type", "Indicator", "Units", "Observed Value")
     ) |>
       bindEvent(obs_table$data)
     
     
     observe({
-      obs_table$data <<- DT::editData(obs_table$data, input$user_input_table_cell_edit)
+      obs_table$data <<- DT::editData(obs_table$data, input$user_input_table_cell_edit, rownames = FALSE)
     }) |>
       bindEvent(input$user_input_table_cell_edit)
     
@@ -231,7 +233,10 @@ identificationServer <- function(id) {
           Threshold_value,
           Flag
         )
-    }, selection = 'none') |>
+    }, 
+      selection = 'none', 
+      options = list(searching = FALSE, bLengthChange = FALSE)
+    ) |>
       bindEvent(input$submit)
     
     output$download_table <- downloadHandler(

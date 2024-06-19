@@ -1,7 +1,7 @@
 ModifiedChannelThresholds <- function(...) {
   ui <- fluidPage(
     titlePanel("[Draft] Biointegrity and Eutrophication Thresholds for Modified Channels and Other Classes of Streams"),
-    "Last updated 2024-06-18",
+    "Last updated 2024-06-19",
     tabsetPanel(
       tabPanel("Background", backgroundUI("bg")),
       tabPanel("Eutrophication Response Models", responseModelsUI("rs")),
