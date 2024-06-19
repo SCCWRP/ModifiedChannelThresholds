@@ -3,8 +3,8 @@ responseModelsServer <- function(id) {
     # threshold user input
     thresh_goal_table <- reactiveValues(data = {
       data.frame(
-        Index = c("CSCI", "ASCI_D", "ASCI_H"),
-        Goal = c(0.63, 0.75, 0.75)
+        Index = c("ASCI_D", "ASCI_H", "CSCI"),
+        Goal = c( 0.75, 0.75, 0.63)
       )
     })
     
@@ -69,9 +69,19 @@ responseModelsServer <- function(id) {
     
     #function to render table using above function 
     output$table <- DT::renderDataTable({
-      thresh_dat()
+      thresh_dat() |>
+        dplyr::mutate(
+          Stressor = case_when(
+            Stressor == 'Total N' ~ 'Total N (mg/L)',
+            Stressor == 'Total P' ~ 'Total P (mg/L)',
+            Stressor == 'Chl-a' ~ 'Chl-a (mg/m2)',
+            Stressor == 'AFDM' ~ 'AFDM (g/m2)',
+            .default = Stressor
+          )
+        ) |>
+        dplyr::select(-Units)
     }, 
-      options = list(pageLength = 6, searching = FALSE, bLengthChange = FALSE), 
+      options = list(searching = FALSE, bLengthChange = FALSE), 
       selection = 'none'
     ) |>
       bindEvent(input$submit)
