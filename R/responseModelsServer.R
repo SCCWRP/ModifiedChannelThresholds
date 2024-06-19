@@ -69,12 +69,28 @@ responseModelsServer <- function(id) {
     
     #function to render table using above function 
     output$table <- DT::renderDataTable({
-      thresh_dat()
+      thresh_dat() |>
+        dplyr::mutate(
+          Stressor = case_when(
+            Stressor == 'Total N' ~ 'Total N (mg/L)',
+            Stressor == 'Total P' ~ 'Total P (mg/L)',
+            Stressor == 'Chl-a' ~ 'Chl-a (mg/m2)',
+            Stressor == 'AFDM' ~ 'AFDM (g/m2)',
+            .default = Stressor
+          )
+        ) |>
+        select(-Units)
     }, 
-      options = list(pageLength = 6, searching = FALSE, bLengthChange = FALSE), 
-      selection = 'none'
+      options = list(searching = FALSE, bLengthChange = FALSE), 
+      selection = 'none',
+      rownames = FALSE,
+      fillContainer = TRUE,
+      colnames = c(
+        "Stressor", "Threshold Candidate", "Index", 
+        "Predicted Score", "Predicted Score SE", "Predicted Score L95", "Predicted Score U95"
+      )
     ) |>
-      bindEvent(input$submit)
+      bindEvent(input$submit, ignoreNULL = FALSE)
     
     # #function to create plots
     plot_data <- reactive({
@@ -147,7 +163,7 @@ responseModelsServer <- function(id) {
           mapping = aes(xintercept = `Threshold Candidate`), 
           color = 'red', linetype = 'dashed', linewidth = 1
         ) +
-        theme_bw()+
+        theme_bw() +
         geom_label(
           data = plot_thresh_dat,
           mapping = aes(x = Inf, y = Inf, label = `Threshold Candidate`),
@@ -158,6 +174,6 @@ responseModelsServer <- function(id) {
     output$plots <- renderPlot({
       plot_data()
     }) |>
-      bindEvent(input$submit)
+      bindEvent(input$submit, ignoreNULL = FALSE)
   })
 }
