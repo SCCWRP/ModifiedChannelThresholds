@@ -1,6 +1,14 @@
+#' Indentification tab
+#'
+#' @param id module id
+#'
+#' @return shiny ui output
+#'
+#' @import bslib
 identificationUI <- function(id) {
-  fluidPage(
-    HTML('<h3 style="color:#2f5496">Threshold query and synthesis</h3>'),
+  page_fluid(
+    theme = bs_theme(preset = "cosmo"),
+    h3('Threshold query and synthesis'),
     fluidRow(
       column(
         12,

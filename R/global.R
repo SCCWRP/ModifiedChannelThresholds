@@ -1,5 +1,6 @@
 library(ggplot2)
 library(shiny)
+library(showtext)
 
 source('data-raw/channel_cross_walk.R')
 source('data-raw/thresholds.R')
