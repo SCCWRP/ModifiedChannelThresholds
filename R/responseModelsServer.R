@@ -3,7 +3,7 @@ responseModelsServer <- function(id) {
     # threshold user input
     thresh_goal_table <- reactiveValues(data = {
       data.frame(
-        Index = c("CSCI", "ASCI_D", "ASCI_H"),
+        Index = c('CSCI', 'ASCI_D', 'ASCI_H'),
         Goal = c(0.63, 0.75, 0.75)
       )
     })
@@ -11,7 +11,7 @@ responseModelsServer <- function(id) {
     output$user_input_table <- DT::renderDataTable({
       thresh_goal_table$data
     }, 
-    editable = list(target = "cell", disable = list(columns = c(0))), 
+    editable = list(target = 'cell', disable = list(columns = c(0))), 
     options = list(dom = 't', ordering = FALSE), 
     selection = 'none',
     rownames = FALSE
@@ -86,8 +86,8 @@ responseModelsServer <- function(id) {
       rownames = FALSE,
       fillContainer = TRUE,
       colnames = c(
-        "Stressor", "Threshold Candidate", "Index", 
-        "Predicted Score", "Predicted Score SE", "Predicted Score L95", "Predicted Score U95"
+        'Stressor', 'Threshold Candidate', 'Index', 
+        'Score', 'Score SE', 'Score L95', 'Score U95'
       )
     ) |>
       bindEvent(input$submit, ignoreNULL = FALSE)
@@ -163,7 +163,6 @@ responseModelsServer <- function(id) {
           mapping = aes(xintercept = `Threshold Candidate`), 
           color = 'red', linetype = 'dashed', linewidth = 1
         ) +
-        theme_bw() +
         geom_label(
           data = plot_thresh_dat,
           mapping = aes(x = Inf, y = Inf, label = `Threshold Candidate`),
