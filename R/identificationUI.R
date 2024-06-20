@@ -75,11 +75,13 @@ identificationUI <- function(id) {
         )
       ),
       navset_card_underline(
+        title = strong('Comparison of observed values with selected thresholds'),
         nav_panel(
           "Summary",
-          strong('Comparison of observed values with selected thresholds'),
           'Numbers in cells are the selected thresholds. Numbers in parentheses in the x-axis labels are the observed values. Color of the cell indicates whether the observed values passed or failed the threshold.',
-          plotOutput(NS(id, "assessment_plot"), width = "6.5in", height = "7.5in"),
+          plotOutput(NS(id, "assessment_plot"), width = "6.5in", height = "7.5in") |>
+            shinycssloaders::withSpinner() |>
+            adjust_spinner_height(),
           card_body(
             fill = FALSE,
             downloadButton(NS(id, "download_graphic"), "Download Graphic")
@@ -87,12 +89,15 @@ identificationUI <- function(id) {
         ),
         nav_panel(
           "Detail",
-          strong('Comparison of observed values with selected thresholds'),
-          plotOutput(NS(id, "assessment_plot_detail"), width = "6.5in", height = "7.5in")
+          plotOutput(NS(id, "assessment_plot_detail"), width = "6.5in", height = "7.5in") |>
+            shinycssloaders::withSpinner() |>
+            adjust_spinner_height()
         ),
         nav_panel(
           "Table",
-          DT::dataTableOutput(NS(id, "threshold_table")),
+          DT::dataTableOutput(NS(id, "threshold_table")) |>
+            shinycssloaders::withSpinner() |>
+            adjust_spinner_height(),
           downloadButton(NS(id, "download_table"), "Download Table")
         )
       )

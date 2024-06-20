@@ -11,10 +11,11 @@ responseModelsServer <- function(id) {
     output$user_input_table <- DT::renderDataTable({
       thresh_goal_table$data
     }, 
-    editable = list(target = 'cell', disable = list(columns = c(0))), 
-    options = list(dom = 't', ordering = FALSE), 
-    selection = 'none',
-    rownames = FALSE
+      editable = list(target = 'cell', disable = list(columns = c(0))), 
+      options = list(dom = 't', ordering = FALSE), 
+      selection = 'none',
+      rownames = FALSE,
+      fillContainer = TRUE
     ) |>
       bindEvent(thresh_goal_table$data)
     
