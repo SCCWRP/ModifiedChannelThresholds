@@ -24,15 +24,21 @@ responseModelsUI <- function(id) {
     layout_columns(
       col_widths = c(2, 10),
       card(
+        card_header(strong('Enter goals and analytes')),
         card_body(
           fill = FALSE,
-          'Biointegrity Goals', 
-          DT::dataTableOutput(NS(id, 'user_input_table'), fill = FALSE)
+          tooltip(
+            trigger = span('Biointegrity goals', bsicons::bs_icon('info-circle')),
+            'Enter or change threshold goal values by double-clicking each cell in the Goal column. No plots or table entries will be generated for indices with blank Goal values'
+          )
         ),
-        'Eutrophication Analytes',
+        DT::dataTableOutput(NS(id, 'user_input_table'), fill = FALSE),
         shinyWidgets::pickerInput(
           inputId = NS(id, 'biostim'),
-          label = NULL,
+          label = tooltip(
+            trigger = span('Eutrophication analytes', bsicons::bs_icon('info-circle')),
+            'Select the desired eutrophication indicators'
+          ),
           choices = unique(raw_dat$Stressor),
           selected = c('Total N', 'Total P', 'Chl-a', 'AFDM', '% cover'),
           options = list(`actions-box` = TRUE),
@@ -44,11 +50,9 @@ responseModelsUI <- function(id) {
         )
       ),
       card(
-        card_header(
-          "Response Models"
-        ),
+        card_header(strong('Response models')),
         layout_column_wrap(
-          width = "500px",
+          width = '500px',
           plotOutput(NS(id, 'plots')) |>
             shinycssloaders::withSpinner() |>
             adjust_spinner_height(),

@@ -8,51 +8,51 @@
 identificationUI <- function(id) {
   tagList(
     h3('Threshold query and synthesis'),
-    "This dashboard allows users to query biointegrity and eutrophication thresholds presented in SCCWRP TR1367. In addition, it allows users to compare observed data to these thresholds, facilitating assessments of modified channels and other special classes of streams in California.",
+    'This dashboard allows users to query biointegrity and eutrophication thresholds presented in SCCWRP TR1367. In addition, it allows users to compare observed data to these thresholds, facilitating assessments of modified channels and other special classes of streams in California.',
     layout_columns(
       col_widths = c(2, 5, 5),
       card(
-        card_header(strong('Identify Thresholds')),
+        card_header(strong('Identify thresholds')),
         shinyWidgets::pickerInput(
-          NS(id, "Region"), 
+          NS(id, 'Region'), 
           label = tooltip(
-            trigger = span("Region", bsicons::bs_icon("info-circle")),
-            "Select the region of interest"
+            trigger = span('Region', bsicons::bs_icon('info-circle')),
+            'Select the region of interest'
           ), 
           choices = region_choices,
           selected = region_choices[1]
         ),
         shinyWidgets::pickerInput(
-          NS(id, "Flow_Dur"),
+          NS(id, 'Flow_Dur'),
           label = tooltip(
-            trigger = span("Flow Duration", bsicons::bs_icon("info-circle")),
-            "Select the appropriate class"
+            trigger = span('Flow duration', bsicons::bs_icon('info-circle')),
+            'Select the appropriate class'
           ),
           choices = flow_duration_choices,
           selected = flow_duration_choices[1]
         ),
         shinyWidgets::pickerInput(
-          NS(id, "Mod_Status"),
+          NS(id, 'Mod_Status'),
           label = tooltip(
-            trigger = span("Modification Type", bsicons::bs_icon("info-circle")),
-            "Select the appropriate class"
+            trigger = span('Modification type', bsicons::bs_icon('info-circle')),
+            'Select the appropriate class'
           ),
           choices = modification_type_choices
         ),
         shinyWidgets::pickerInput(
-          NS(id, "Stringency"),
+          NS(id, 'Stringency'),
           label = tooltip(
-            trigger = span("Stringency", bsicons::bs_icon("info-circle")),
-            "Select the desired level of stringency (only one may be selected)"
+            trigger = span('Stringency', bsicons::bs_icon('info-circle')),
+            'Select the desired level of stringency. Only one may be selected'
           ), 
           choices = stringency_choices,
           selected = stringency_choices[1]
         ),
         shinyWidgets::pickerInput(
-          NS(id, "Indicator"),
+          NS(id, 'Indicator'),
           label = tooltip(
-            trigger = span("Indicator", bsicons::bs_icon("info-circle")),
-            "Select which biointegrity or eutrophication indicators you wish to evaluate"
+            trigger = span('Indicator', bsicons::bs_icon('info-circle')),
+            'Select which biointegrity or eutrophication indicators you wish to evaluate'
           ),
           choices = indicator_choices,
           selected = indicator_choices,
@@ -62,43 +62,43 @@ identificationUI <- function(id) {
       ),
       card(
         card_header(
-          strong('Enter Observed Values'),
+          strong('Enter observed values'),
           br(),
           'Enter values observed at a site to evaluate with the thresholds identified above by double-clicking each cell in the Observed Value column. If data are missing, leave the observed value blank. Click the Submit button below the table to submit.'
         ),
-        DT::dataTableOutput(NS(id, "user_input_table")),
+        DT::dataTableOutput(NS(id, 'user_input_table')),
         layout_columns(
           fill = FALSE,
           col_widths = c(6, 6),
-          actionButton(NS(id, "clear"), "Clear"),
-          actionButton(NS(id, "submit"), "Submit")
+          actionButton(NS(id, 'clear'), 'Clear'),
+          actionButton(NS(id, 'submit'), 'Submit')
         )
       ),
       navset_card_underline(
         title = strong('Comparison of observed values with selected thresholds'),
         nav_panel(
-          "Summary",
+          'Summary',
           'Numbers in cells are the selected thresholds. Numbers in parentheses in the x-axis labels are the observed values. Color of the cell indicates whether the observed values passed or failed the threshold.',
-          plotOutput(NS(id, "assessment_plot"), width = "6.5in", height = "7.5in") |>
+          plotOutput(NS(id, 'assessment_plot'), width = '6.5in', height = '7.5in') |>
             shinycssloaders::withSpinner() |>
             adjust_spinner_height(),
           card_body(
             fill = FALSE,
-            downloadButton(NS(id, "download_graphic"), "Download Graphic")
+            downloadButton(NS(id, 'download_graphic'), 'Download Graphic')
           )
         ),
         nav_panel(
-          "Detail",
-          plotOutput(NS(id, "assessment_plot_detail"), width = "6.5in", height = "7.5in") |>
+          'Detail',
+          plotOutput(NS(id, 'assessment_plot_detail'), width = '6.5in', height = '7.5in') |>
             shinycssloaders::withSpinner() |>
             adjust_spinner_height()
         ),
         nav_panel(
-          "Table",
-          DT::dataTableOutput(NS(id, "threshold_table")) |>
+          'Table',
+          DT::dataTableOutput(NS(id, 'threshold_table')) |>
             shinycssloaders::withSpinner() |>
             adjust_spinner_height(),
-          downloadButton(NS(id, "download_table"), "Download Table")
+          downloadButton(NS(id, 'download_table'), 'Download Table')
         )
       )
     )

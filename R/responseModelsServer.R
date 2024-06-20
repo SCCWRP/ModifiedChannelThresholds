@@ -14,8 +14,7 @@ responseModelsServer <- function(id) {
       editable = list(target = 'cell', disable = list(columns = c(0))), 
       options = list(dom = 't', ordering = FALSE), 
       selection = 'none',
-      rownames = FALSE,
-      fillContainer = TRUE
+      rownames = FALSE
     ) |>
       bindEvent(thresh_goal_table$data)
     
