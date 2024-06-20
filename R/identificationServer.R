@@ -149,7 +149,7 @@ identificationServer <- function(id) {
         filter(!is.na(Class)) |>
         arrange(Class, Approach, Response_model_form, Response_model_index) 
     }) |>
-      bindEvent(input$Region, input$Mod_Status, input$Flow_Dur, input$Stringency, input$Indicator, input$submit)
+      bindEvent(input$Region, input$Mod_Status, input$Flow_Dur, input$Stringency, input$Indicator, input$submit, ignoreNULL = FALSE)
 
     
     output$assessment_plot <- renderPlot({
@@ -203,6 +203,7 @@ identificationServer <- function(id) {
       options = list(dom = 't', ordering = FALSE), 
       rownames = FALSE,
       selection = 'none',
+      fillContainer = TRUE,
       colnames = c("Indicator Type", "Indicator", "Units", "Observed Value")
     ) |>
       bindEvent(obs_table$data)
@@ -233,9 +234,10 @@ identificationServer <- function(id) {
         )
     }, 
       selection = 'none', 
+      fillContainer = TRUE,
       options = list(searching = FALSE, bLengthChange = FALSE)
     ) |>
-      bindEvent(input$submit)
+      bindEvent(input$submit, ignoreNULL = FALSE)
     
     output$download_table <- downloadHandler(
       filename = function() {
