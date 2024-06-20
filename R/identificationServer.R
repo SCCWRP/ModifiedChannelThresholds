@@ -234,6 +234,7 @@ identificationServer <- function(id) {
         )
     }, 
       selection = 'none', 
+      rownames = FALSE,
       fillContainer = TRUE,
       options = list(searching = FALSE, bLengthChange = FALSE)
     ) |>

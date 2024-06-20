@@ -61,10 +61,14 @@ identificationUI <- function(id) {
         )
       ),
       card(
-        card_header(
-          strong('Enter observed values'),
-          br(),
-          'Enter values observed at a site to evaluate with the thresholds identified above by double-clicking each cell in the Observed Value column. If data are missing, leave the observed value blank. Click the Submit button below the table to submit.'
+        card_header(strong('Enter observed values')),
+        card_body(
+          fillable = FALSE,
+          fill = FALSE,
+          tooltip(
+            trigger = span('Observed values', bsicons::bs_icon('info-circle')),
+            'Enter values observed at a site to evaluate with the thresholds identified above by double-clicking each cell in the Observed Value column. If data are missing, leave the observed value blank. Click the Submit button below the table to submit'
+          )
         ),
         DT::dataTableOutput(NS(id, 'user_input_table')),
         layout_columns(
@@ -78,8 +82,15 @@ identificationUI <- function(id) {
         title = strong('Comparison of observed values with selected thresholds'),
         nav_panel(
           'Summary',
-          'Numbers in cells are the selected thresholds. Numbers in parentheses in the x-axis labels are the observed values. Color of the cell indicates whether the observed values passed or failed the threshold.',
-          plotOutput(NS(id, 'assessment_plot'), width = '6.5in', height = '7.5in') |>
+          card_body(
+            fillable = FALSE,
+            fill = FALSE,
+            tooltip(
+              trigger = span('Threshold identification', bsicons::bs_icon('info-circle')),
+              'Numbers in cells are the selected thresholds. Numbers in parentheses in the x-axis labels are the observed values. Color of the cell indicates whether the observed values passed or failed the threshold'
+            )
+          ),
+          plotOutput(NS(id, 'assessment_plot')) |>
             shinycssloaders::withSpinner() |>
             adjust_spinner_height(),
           card_body(
@@ -89,7 +100,7 @@ identificationUI <- function(id) {
         ),
         nav_panel(
           'Detail',
-          plotOutput(NS(id, 'assessment_plot_detail'), width = '6.5in', height = '7.5in') |>
+          plotOutput(NS(id, 'assessment_plot_detail')) |>
             shinycssloaders::withSpinner() |>
             adjust_spinner_height()
         ),
