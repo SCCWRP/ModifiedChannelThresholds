@@ -15,6 +15,7 @@ Imports:
     cowplot,
     dplyr,
     DT,
+    ggh4x,
     ggplot2,
     pkgload,
     readr,

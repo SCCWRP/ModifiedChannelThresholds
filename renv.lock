@@ -486,6 +486,24 @@
       ],
       "Hash": "f70d3fe2d9e7654213a946963d1591eb"
     },
+    "ggh4x": {
+      "Package": "ggh4x",
+      "Version": "0.2.8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "cli",
+        "ggplot2",
+        "grid",
+        "gtable",
+        "lifecycle",
+        "rlang",
+        "scales",
+        "stats",
+        "vctrs"
+      ],
+      "Hash": "012d7705b4cdc7b5ee89895aeefc1d45"
+    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.5.1",
@@ -1338,26 +1356,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "7dfca1e9c5c278300b5ca6a1772072f7"
-    },
-    "thematic": {
-      "Package": "thematic",
-      "Version": "0.1.5",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "farver",
-        "ggplot2",
-        "grDevices",
-        "graphics",
-        "grid",
-        "rappdirs",
-        "rlang",
-        "rstudioapi",
-        "scales",
-        "utils"
-      ],
-      "Hash": "dd888c43932085e4a8aa7388f6f8dc23"
     },
     "tibble": {
       "Package": "tibble",

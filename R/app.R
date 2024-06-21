@@ -7,8 +7,7 @@
 #'
 #' @import bslib
 ModifiedChannelThresholds <- function(...) {
-  ggplot2::theme_set(ggplot2::theme_bw(base_size = 16))
-  thematic::thematic_shiny(font = 'auto')
+  ggplot2::theme_set(ggplot2::theme_bw())
   
   ui <- page_navbar(
     title = 'ModifiedChannelThresholds',
@@ -16,6 +15,18 @@ ModifiedChannelThresholds <- function(...) {
       preset = 'cosmo',
       'headings-color' = '#2f5496'
     ),
+    header = tags$head(tags$style(
+      HTML('
+        .bslib-full-screen-enter {
+          bottom: var(--bslib-full-screen-enter-bottom);
+          right: var(--bslib-full-screen-enter-right);
+        }
+        table td.withPlaceholder:empty:before {
+          content: "Double click to input";
+          color: gray;
+        }
+      ')
+    )),
     nav_panel('Background', backgroundUI('bg')),
     nav_panel('Eutrophication Response Models', responseModelsUI('rs')),
     nav_panel('Threshold Query and Synthesis', identificationUI('id')),

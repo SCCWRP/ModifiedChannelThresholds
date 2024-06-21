@@ -56,11 +56,16 @@ identificationServer <- function(id) {
         )
       
       threshold_colors <- c("#1f78b4", "#a6cee3", "#e31a1c", "#cab2d6", "#ff7f00", "#fdbf6f")
+      
+      first_panel_rel_height <- length(unique(my_thresh_df$Approach4[my_thresh_df$Indicator_Type == 'Biointegrity'])) / 
+        length(unique(my_thresh_df$Approach4[my_thresh_df$Indicator_Type == 'Eutrophication']))
+      
       assessment_plot <- ggplot(data = my_thresh_df, aes(x = obs_label, y = Approach4)) +
         geom_tile(aes(fill = Threshold_pass), color = "white", show.legend = TRUE) +
         geom_text(aes(label = Threshold_value)) +
         scale_fill_manual(name = "Threshold", values = threshold_colors, drop = F) +
         facet_wrap(~ Indicator_Type, ncol = 1, scales = "free", drop = T) +
+        ggh4x::force_panelsizes(rows = c(first_panel_rel_height, 1)) +
         labs(y = "", x = "Indicator\n(Observed value)") +
         theme(
           legend.position = "bottom",
@@ -100,7 +105,7 @@ identificationServer <- function(id) {
         group_by(Class, Indicator) |>
         mutate(n = n()) |>
         filter(n > 1)
-      
+
       ggplot(data = thresh_dat, aes(x = Class, y = Threshold_value)) +
         geom_point(aes(fill = Approach5, shape = Index, size = Flagged)) +
         stat_summary(data = unflagged_thresholds, fun = "mean", geom = "crossbar", linewidth = 0.25) +
@@ -117,10 +122,13 @@ identificationServer <- function(id) {
         guides(
           fill = guide_legend(override.aes = list(shape = 21, size = 2), order = 1),
           shape = guide_legend(override.aes = list(fill = "gray", size = 2), order = 2),
-          size = guide_legend(order = 3),
-          color = guide_legend(order = 4)
+          size = guide_legend(order = 3)
         ) +
-        theme(legend.position = "bottom", legend.direction = "vertical") +
+        theme(
+          legend.direction = "vertical", legend.justification = "center",
+          legend.position = "bottom", legend.location = "plot", 
+          legend.spacing.x = unit(0, "pt")
+        ) +
         labs(x = "", y = "")
     }
     
@@ -153,7 +161,7 @@ identificationServer <- function(id) {
 
     
     output$assessment_plot <- renderPlot({
-      assessment_summary_plot(threshold_data(), obs_table$data) + theme(legend.position = "none")
+      assessment_summary_plot(threshold_data(), obs_table$data)
     }) |>
       bindEvent(input$submit, input$clear)
     
@@ -200,7 +208,7 @@ identificationServer <- function(id) {
         )
       }, 
       editable = list(target = "cell", disable = list(columns = c(0, 1, 2))), 
-      options = list(dom = 't', ordering = FALSE), 
+      options = list(dom = 't', ordering = FALSE, columnDefs = list(list(targets = 3, className = "withPlaceholder"))), 
       rownames = FALSE,
       selection = 'none',
       fillContainer = TRUE,
@@ -261,14 +269,27 @@ identificationServer <- function(id) {
       }
     )
     
-    output$download_graphic <- downloadHandler(
+    output$download_graphic_summary <- downloadHandler(
       filename = function() {
-        paste0("Threshold-Graphic-", Sys.Date(), ".png")
+        paste0("Threshold-Graphic-Summary-", Sys.Date(), ".png")
       },
       content = function(file) {
         cowplot::save_plot(
           file, 
-          plot = assessment_summary_plot(threshold_data(), obs_table$data) + 
+          plot = assessment_summary_plot(threshold_data(), obs_table$data) +
+            theme(plot.background = element_rect(fill = "white", color = NA)), 
+          base_height = 7.5, base_width = 6.5
+        )
+      }
+    )
+    output$download_graphic_detail <- downloadHandler(
+      filename = function() {
+        paste0("Threshold-Graphic-Detail", Sys.Date(), ".png")
+      },
+      content = function(file) {
+        cowplot::save_plot(
+          file, 
+          plot = assessment_detail_plot(threshold_data(), obs_table$data) + 
             theme(plot.background = element_rect(fill = "white", color = NA)), 
           base_height = 7.5, base_width = 6.5
         )
