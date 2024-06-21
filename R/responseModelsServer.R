@@ -3,8 +3,8 @@ responseModelsServer <- function(id) {
     # threshold user input
     thresh_goal_table <- reactiveValues(data = {
       data.frame(
-        Index = c('CSCI', 'ASCI_D', 'ASCI_H'),
-        Goal = c(0.63, 0.75, 0.75)
+        Index = c('ASCI_D', 'ASCI_H', 'CSCI'),
+        Goal = c(0.75, 0.75, 0.63)
       )
     })
     
