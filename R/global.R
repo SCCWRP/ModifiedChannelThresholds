@@ -1,9 +1,10 @@
 library(ggplot2)
 library(shiny)
-library(showtext)
 
 source('data-raw/channel_cross_walk.R')
 source('data-raw/thresholds.R')
+
+ggplot2::theme_set(ggplot2::theme_bw())
 
 data(thresholds)
 data(obs_points_df)
