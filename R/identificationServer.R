@@ -159,16 +159,27 @@ identificationServer <- function(id) {
     }) |>
       bindEvent(input$Region, input$Mod_Status, input$Flow_Dur, input$Stringency, input$Indicator, input$submit, ignoreNULL = FALSE)
 
-    
-    output$assessment_plot <- renderPlot({
+    # use reactive functions here so that the reactive dependencies on input
+    # and clear are just on the plot generation, not the rendering  of the
+    # plot to the page. this allows for dynamic resizing etc, without having
+    # to click the submit or clear button again to render the plot
+    assessment_summary_plot_reactive <- reactive({
       assessment_summary_plot(threshold_data(), obs_table$data)
     }) |>
       bindEvent(input$submit, input$clear)
     
-    output$assessment_plot_detail <- renderPlot({
+    assessment_detail_plot_reactive <- reactive({
       assessment_detail_plot(threshold_data(), obs_table$data)
     }) |>
       bindEvent(input$submit, input$clear)
+    
+    output$assessment_plot <- renderPlot({
+      assessment_summary_plot_reactive()
+    }) 
+    
+    output$assessment_plot_detail <- renderPlot({
+      assessment_detail_plot_reactive()
+    }) 
     
 
     obs_table <- reactiveValues(data = {
