@@ -86,9 +86,7 @@ identificationUI <- function(id) {
           nav_panel(
             'Summary',
             card_body(
-              fillable = FALSE,
               card_body(
-                fill = FALSE,
                 class = 'p-0',
                 min_height = "400px",
                 plotOutput(NS(id, 'assessment_plot')) |>
@@ -105,7 +103,6 @@ identificationUI <- function(id) {
             'Detail',
             card_body(
               card_body(
-                fill = FALSE,
                 class = 'p-0',
                 min_height = "400px",
                 plotOutput(NS(id, 'assessment_plot_detail')) |>
