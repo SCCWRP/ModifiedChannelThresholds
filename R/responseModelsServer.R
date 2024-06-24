@@ -18,9 +18,21 @@ responseModelsServer <- function(id) {
     ) |>
       bindEvent(thresh_goal_table$data)
     
-    
     observe({
-      thresh_goal_table$data <<- DT::editData(thresh_goal_table$data, input$user_input_table_cell_edit, rownames = FALSE)
+      thresh_goal_table$data <<- DT::editData(
+        thresh_goal_table$data, 
+        input$user_input_table_cell_edit, 
+        rownames = FALSE
+      ) 
+      
+      thresh_goal_table$data <- thresh_goal_table$data |>
+        dplyr::mutate(
+          Goal = dplyr::case_when(
+            Goal < 0 ~ NA_real_,
+            Goal > 1 ~ 1,
+            .default = round(Goal, 2)
+          )
+        )
     }) |>
       bindEvent(input$user_input_table_cell_edit)
     

@@ -11,6 +11,12 @@ data(obs_points_df)
 data(raw_dat)
 data(channel_cross_walk)
 
+max_TN <- 3
+max_TP <- 1.5
+max_chl <- 300
+max_afdm <- 400
+max_cov <- 100
+
 region_choices <- channel_cross_walk |>
   dplyr::distinct(Region) |>
   dplyr::pull()

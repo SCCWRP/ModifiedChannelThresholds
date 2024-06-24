@@ -241,7 +241,27 @@ identificationServer <- function(id) {
     
     
     observe({
-      obs_table$data <<- DT::editData(obs_table$data, input$user_input_table_cell_edit, rownames = FALSE)
+      obs_table$data <<- DT::editData(
+        obs_table$data, 
+        input$user_input_table_cell_edit, 
+        rownames = FALSE
+      ) 
+      obs_table$data <- obs_table$data |>
+        dplyr::rowwise() |>
+        dplyr::mutate(
+          Observed_value = dplyr::case_when(
+            Observed_value < 0 ~ NA_real_,
+            Indicator == "ASCI_D" ~ round(min(Observed_value, 1), 2),
+            Indicator == "ASCI_H" ~ round(min(Observed_value, 1), 2),
+            Indicator == "CSCI" ~ round(min(Observed_value, 1), 2),
+            Indicator == "TN" ~ round(min(Observed_value, max_TN), 3),
+            Indicator == "TP" ~ round(min(Observed_value, max_TP), 3),
+            Indicator == "Chl-a" ~ round(min(Observed_value, max_chl), 1),
+            Indicator == "AFDM" ~ round(min(Observed_value, max_afdm), 1),
+            Indicator == "% cover" ~ round(min(Observed_value, max_cov)),
+            .default = Observed_value
+          )
+        )
     }) |>
       bindEvent(input$user_input_table_cell_edit)
     
