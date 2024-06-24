@@ -73,7 +73,7 @@ identificationServer <- function(id) {
           panel.border = element_blank(),
           axis.title.x = element_text(color = "gray25"),
           legend.location = "plot",
-          legend.key.spacing.y = unit(0, "cm")
+          legend.key.spacing.y = unit(0, "pt")
         )
       assessment_plot
     }
@@ -174,12 +174,24 @@ identificationServer <- function(id) {
       bindEvent(input$submit, input$clear)
     
     output$assessment_plot <- renderPlot({
+      if (input$submit == 0) {
+        placeholder <- make_placeholder_plot(
+          msg = "Identify thresholds and enter observed values to compare"
+        )
+        return(placeholder)
+      }
       assessment_summary_plot_reactive()
-    }) 
+    }, res = 96) 
     
     output$assessment_plot_detail <- renderPlot({
+      if (input$submit == 0) {
+        placeholder <- make_placeholder_plot(
+          msg = "Identify thresholds and enter observed values to compare"
+        )
+        return(placeholder)
+      }
       assessment_detail_plot_reactive()
-    }) 
+    }, res = 96) 
     
 
     obs_table <- reactiveValues(data = {
@@ -239,17 +251,19 @@ identificationServer <- function(id) {
       bindEvent(input$clear)
     
     output$threshold_table <- DT::renderDataTable({
+      if (input$submit == 0) {
+        placeholder <- threshold_data() |>
+          select(
+            Class, Class_fullname, Stringency, Approach, Response_model_detail,
+            Indicator_Type, Indicator, Threshold_value, Flag
+          ) |>
+          filter(1 == 0) # to show headers but no data as a placeholder
+        return(placeholder)
+      }
       threshold_data() |>
         select(
-          Class,
-          Class_fullname, 
-          Stringency,
-          Approach,
-          Response_model_detail,
-          Indicator_Type,
-          Indicator,
-          Threshold_value,
-          Flag
+          Class, Class_fullname, Stringency, Approach, Response_model_detail,
+          Indicator_Type, Indicator, Threshold_value, Flag
         )
     }, 
       selection = 'none', 
@@ -259,6 +273,13 @@ identificationServer <- function(id) {
     ) |>
       bindEvent(input$submit, ignoreNULL = FALSE)
     
+    observe({
+      shinyjs::enable("download_table")
+      shinyjs::enable("download_graphic_summary")
+      shinyjs::enable("download_graphic_detail")
+    }) |>
+      bindEvent(req(input$submit))
+    
     output$download_table <- downloadHandler(
       filename = function() {
         paste0("Threshold-Table-", Sys.Date(), ".csv")
@@ -266,15 +287,8 @@ identificationServer <- function(id) {
       content = function(file) {
         data = threshold_data() |>
           select(
-            Class,
-            Class_fullname, 
-            Stringency,
-            Approach,
-            Response_model_detail,
-            Indicator_Type,
-            Indicator,
-            Threshold_value,
-            Flag
+            Class, Class_fullname, Stringency, Approach, Response_model_detail,
+            Indicator_Type, Indicator, Threshold_value, Flag
           )
         write.csv(data, file, row.names = FALSE, na = "")
       }
@@ -295,7 +309,7 @@ identificationServer <- function(id) {
     )
     output$download_graphic_detail <- downloadHandler(
       filename = function() {
-        paste0("Threshold-Graphic-Detail", Sys.Date(), ".png")
+        paste0("Threshold-Graphic-Detail-", Sys.Date(), ".png")
       },
       content = function(file) {
         cowplot::save_plot(

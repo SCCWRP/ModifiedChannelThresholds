@@ -6,16 +6,23 @@
 #'
 #' @import bslib
 identificationUI <- function(id) {
-  tagList(
-    h3('Threshold query and synthesis'),
-    'This dashboard allows users to query biointegrity and eutrophication thresholds presented in SCCWRP TR1367. In addition, it allows users to compare observed data to these thresholds, facilitating assessments of modified channels and other special classes of streams in California.',
-    card(
-      full_screen = TRUE,
-      style = "border: 0px",
-      layout_columns(
-        col_widths = c(2, 5, 5),
-        card(
-          card_header(strong('Identify thresholds')),
+  page_sidebar(
+    sidebar = sidebar(
+      h3('Threshold query and synthesis'),
+      'This dashboard allows users to query biointegrity and eutrophication thresholds presented in SCCWRP TR1367. In addition, it allows users to compare observed data to these thresholds, facilitating assessments of modified channels and other special classes of streams in California.',
+    ),
+    layout_columns(
+      col_widths = c(5, 7),
+      card(
+        card_header(
+          tooltip(
+            trigger = span(strong('Identify thresholds and enter observed values'), bsicons::bs_icon('info-circle')),
+            'Enter values observed at a site to evaluate with the identified thresholds by double-clicking each cell in the Observed Value column. If data are missing, leave the observed value blank. Click the Submit button below the table to submit'
+          )
+        ),
+        layout_columns(
+          fill = FALSE,
+          col_widths = c(4, 4, 4),
           shinyWidgets::pickerInput(
             NS(id, 'Region'), 
             label = tooltip(
@@ -23,7 +30,8 @@ identificationUI <- function(id) {
               'Select the region of interest'
             ), 
             choices = region_choices,
-            selected = region_choices[1]
+            selected = region_choices[1],
+            options = list(container = "body")
           ),
           shinyWidgets::pickerInput(
             NS(id, 'Flow_Dur'),
@@ -32,7 +40,8 @@ identificationUI <- function(id) {
               'Select the appropriate class'
             ),
             choices = flow_duration_choices,
-            selected = flow_duration_choices[1]
+            selected = flow_duration_choices[1],
+            options = list(container = "body")
           ),
           shinyWidgets::pickerInput(
             NS(id, 'Mod_Status'),
@@ -40,7 +49,8 @@ identificationUI <- function(id) {
               trigger = span('Modification type', bsicons::bs_icon('info-circle')),
               'Select the appropriate class'
             ),
-            choices = modification_type_choices
+            choices = modification_type_choices,
+            options = list(container = "body")
           ),
           shinyWidgets::pickerInput(
             NS(id, 'Stringency'),
@@ -49,7 +59,8 @@ identificationUI <- function(id) {
               'Select the desired level of stringency. Only one may be selected'
             ), 
             choices = stringency_choices,
-            selected = stringency_choices[1]
+            selected = stringency_choices[1],
+            options = list(container = "body")
           ),
           shinyWidgets::pickerInput(
             NS(id, 'Indicator'),
@@ -60,66 +71,58 @@ identificationUI <- function(id) {
             choices = indicator_choices,
             selected = indicator_choices,
             multiple = TRUE,
-            options = shinyWidgets::pickerOptions(actionsBox = TRUE)
+            options = shinyWidgets::pickerOptions(actionsBox = TRUE, container = "body")
           )
         ),
-        card(
-          card_header(
-            tooltip(
-              trigger = span(strong('Enter observed values'), bsicons::bs_icon('info-circle')),
-              'Enter values observed at a site to evaluate with the identified thresholds by double-clicking each cell in the Observed Value column. If data are missing, leave the observed value blank. Click the Submit button below the table to submit'
+        DT::dataTableOutput(NS(id, 'user_input_table')),
+        layout_columns(
+          fill = FALSE,
+          col_widths = c(6, 6),
+          actionButton(NS(id, 'clear'), 'Clear'),
+          actionButton(NS(id, 'submit'), 'Submit')
+        )
+      ),
+      navset_card_underline(
+        title = tooltip(
+          trigger = span(strong('Comparison of observed values with selected thresholds'), bsicons::bs_icon('info-circle')),
+          'Numbers in cells are the selected thresholds. Numbers in parentheses in the x-axis labels are the observed values. Color of the cell indicates whether the observed values passed or failed the threshold'
+        ),
+        nav_panel(
+          'Summary',
+          card_body(
+            card_body(
+              class = 'p-0',
+              min_height = "600px",
+              plotOutput(NS(id, 'assessment_plot')),
             )
           ),
-          DT::dataTableOutput(NS(id, 'user_input_table')),
-          layout_columns(
+          card_body(
             fill = FALSE,
-            col_widths = c(6, 6),
-            actionButton(NS(id, 'clear'), 'Clear'),
-            actionButton(NS(id, 'submit'), 'Submit')
-          )
-        ),
-        navset_card_underline(
-          title = tooltip(
-            trigger = span(strong('Comparison of observed values with selected thresholds'), bsicons::bs_icon('info-circle')),
-            'Numbers in cells are the selected thresholds. Numbers in parentheses in the x-axis labels are the observed values. Color of the cell indicates whether the observed values passed or failed the threshold'
-          ),
-          nav_panel(
-            'Summary',
-            card_body(
-              card_body(
-                class = 'p-0',
-                min_height = "400px",
-                plotOutput(NS(id, 'assessment_plot')) |>
-                  shinycssloaders::withSpinner() |>
-                  adjust_spinner_height(),
-              )
-            ),
-            card_body(
-              fill = FALSE,
+            shinyjs::disabled(
               downloadButton(NS(id, 'download_graphic_summary'), 'Download Graphic')
             )
+          )
+        ),
+        nav_panel(
+          'Detail',
+          card_body(
+            card_body(
+              class = 'p-0',
+              min_height = "600px",
+              plotOutput(NS(id, 'assessment_plot_detail'))
+            )            
           ),
-          nav_panel(
-            'Detail',
-            card_body(
-              card_body(
-                class = 'p-0',
-                min_height = "400px",
-                plotOutput(NS(id, 'assessment_plot_detail')) |>
-                  shinycssloaders::withSpinner() |>
-                  adjust_spinner_height()
-              )            
-            ),
-            card_body(
-              fill = FALSE,
+          card_body(
+            fill = FALSE,
+            shinyjs::disabled(
               downloadButton(NS(id, 'download_graphic_detail'), 'Download Graphic')
             )
-          ),
-          nav_panel(
-            'Table',
-            DT::dataTableOutput(NS(id, 'threshold_table')) |>
-              shinycssloaders::withSpinner() |>
-              adjust_spinner_height(),
+          )
+        ),
+        nav_panel(
+          'Table',
+          DT::dataTableOutput(NS(id, 'threshold_table')),
+          shinyjs::disabled(
             downloadButton(NS(id, 'download_table'), 'Download Table')
           )
         )
