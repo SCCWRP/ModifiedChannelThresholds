@@ -27,6 +27,7 @@ responseModelsUI <- function(id) {
             'Enter or change threshold goal values by double-clicking each cell in the Goal column. No plots or table entries will be generated for indices with blank Goal values'
           ),
           DT::dataTableOutput(NS(id, 'user_input_table'), fill = FALSE),
+          br(),
           shinyWidgets::pickerInput(
             inputId = NS(id, 'biostim'),
             label = tooltip(
