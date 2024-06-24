@@ -90,7 +90,7 @@ responseModelsServer <- function(id) {
         'Score', 'Score SE', 'Score L95', 'Score U95'
       )
     ) |>
-      bindEvent(input$submit)
+      bindEvent(input$submit, ignoreNULL = FALSE)
     
     # #function to create plots
     plot_data <- reactive({
@@ -140,7 +140,12 @@ responseModelsServer <- function(id) {
             levels = c('Total N (mg/L)', 'Total P (mg/L)', 'Chl-a (mg/m2)', 'AFDM (g/m2)', '% cover')
           )
         )
-      req(all(nrow(plot_raw_dat) > 0, nrow(plot_obs_df) > 0, nrow(plot_thresh_dat) > 0))
+      if (all(nrow(plot_raw_dat) == 0, nrow(plot_obs_df) == 0, nrow(plot_thresh_dat) == 0)) {
+        placeholder <- make_placeholder_plot(
+          msg = "Enter threshold goals and analytes\nto view response model plots"
+        )
+        return(placeholder)
+      }
 
       ggplot(data = plot_raw_dat, aes(x = BiostimValue, y = Fit))+
         geom_point(data = plot_obs_df, aes(y = IndexScore), size = 0.5, color = 'gray') +
@@ -167,11 +172,11 @@ responseModelsServer <- function(id) {
           label.size = NA, hjust = 1, vjust = 1
         )
     }) |>
-      bindEvent(input$submit)
+      bindEvent(input$submit, ignoreNULL = FALSE)
     
     #function to render plot using above function
     output$plots <- renderPlot({
       plot_data()
-    })
+    }, res = 96)
   })
 }

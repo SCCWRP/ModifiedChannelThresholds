@@ -49,13 +49,16 @@ responseModelsUI <- function(id) {
           card(
             card_header(strong('Response models')),
             layout_columns(
-              col_widths = c(6, 6),
-              plotOutput(NS(id, 'plots')) |>
-                shinycssloaders::withSpinner() |>
-                adjust_spinner_height(),
-              DT::dataTableOutput(NS(id, 'table')) |>
-                shinycssloaders::withSpinner() |>
-                adjust_spinner_height()
+              col_widths = c(12, 12),
+              card_body(
+                class = 'p-0',
+                card_body(
+                  class = 'p-0',
+                  min_height = "200px",
+                  plotOutput(NS(id, 'plots'))
+                )
+              ),
+              DT::dataTableOutput(NS(id, 'table'))
             )
           )
         )

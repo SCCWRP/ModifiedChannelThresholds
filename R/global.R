@@ -4,7 +4,7 @@ library(shiny)
 source('data-raw/channel_cross_walk.R')
 source('data-raw/thresholds.R')
 
-ggplot2::theme_set(ggplot2::theme_bw())
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
 
 data(thresholds)
 data(obs_points_df)

@@ -23,7 +23,8 @@ ModifiedChannelThresholds <- function(...) {
           content: "Double click to input";
           color: gray;
         }
-      ')
+      '),
+      shinyjs::useShinyjs()
     )),
     nav_panel('Background', backgroundUI('bg')),
     nav_panel('Eutrophication Response Models', responseModelsUI('rs')),
