@@ -12,7 +12,7 @@ backgroundUI <- function(id) {
       .center {text-align: center;}
     ')),
     h2('[Draft] Biointegrity and Eutrophication Thresholds for Modified Channels and Other Classes of Streams'),
-    p('Last updated 2024-06-24'),
+    p('Last updated 2024-06-25'),
     h3("Introduction"),
     p('Watershed managers in California face a number of challenges when it comes to applying bioassessment tools (such as biointegrity indices or thresholds for eutrophication substances) on certain types of streams. These challenges include suspicions about the applicability of tools in regions or stream types that differ from reference data sets used to calibrate tools (e.g., Central Valley Floor streams, intermittent streams), as well as concerns about the ability to achieve reference-based thresholds in channels that have been modified for flood protection or water conveyance. These issues are particularly relevant in the Central Valley, although they pertain to watershed managers in all parts of California.'),
     p('This dashboard is intended to help managers explore thresholds for biointegrity and eutrophication indicators for classes of streams where standard approaches may not be appropriate, either due to uncertainty about their validity or doubts about the feasibility of achieving these thresholds. Details on how these thresholds were identified can be found in SCCWRP Technical Report #1367. The use of the thresholds in this dashboard and in Technical Report #1367 is provided for informational purposes, and it is not intended to endorse the use of thresholds or waterbody classifications in policy or regulatory programs.'),

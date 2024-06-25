@@ -29,7 +29,6 @@ responseModelsServer <- function(id) {
         dplyr::mutate(
           Goal = dplyr::case_when(
             Goal < 0 ~ NA_real_,
-            Goal > 1 ~ 1,
             .default = round(Goal, 2)
           )
         )

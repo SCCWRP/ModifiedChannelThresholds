@@ -8,7 +8,7 @@
 #' @import bslib
 ModifiedChannelThresholds <- function(...) {
   ui <- page_navbar(
-    title = 'ModifiedChannelThresholds',
+    title = '[Draft] Modified channel thresholds',
     theme = bs_theme(
       preset = 'cosmo',
       'headings-color' = '#2f5496'
