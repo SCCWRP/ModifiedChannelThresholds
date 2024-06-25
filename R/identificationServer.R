@@ -253,7 +253,7 @@ identificationServer <- function(id) {
             Observed_value < 0 ~ NA_real_,
             Indicator == "ASCI_D" ~ round(Observed_value, 2),
             Indicator == "ASCI_H" ~ round(Observed_value, 2),
-            Indicator == "CSCI" ~ round(min(Observed_value, 1), 2),
+            Indicator == "CSCI" ~ round(Observed_value, 2),
             Indicator == "TN" ~ round(min(Observed_value, max_TN), 3),
             Indicator == "TP" ~ round(min(Observed_value, max_TP), 3),
             Indicator == "Chl-a" ~ round(min(Observed_value, max_chl), 1),
