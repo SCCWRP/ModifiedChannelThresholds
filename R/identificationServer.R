@@ -56,20 +56,24 @@ identificationServer <- function(id) {
         )
       
       threshold_colors <- c("#1f78b4", "#a6cee3", "#e31a1c", "#cab2d6", "#ff7f00", "#fdbf6f")
+      
+      first_panel_rel_height <- length(unique(my_thresh_df$Approach4[my_thresh_df$Indicator_Type == 'Biointegrity'])) / 
+        length(unique(my_thresh_df$Approach4[my_thresh_df$Indicator_Type == 'Eutrophication']))
+      
       assessment_plot <- ggplot(data = my_thresh_df, aes(x = obs_label, y = Approach4)) +
         geom_tile(aes(fill = Threshold_pass), color = "white", show.legend = TRUE) +
         geom_text(aes(label = Threshold_value)) +
         scale_fill_manual(name = "Threshold", values = threshold_colors, drop = F) +
         facet_wrap(~ Indicator_Type, ncol = 1, scales = "free", drop = T) +
+        ggh4x::force_panelsizes(rows = c(first_panel_rel_height, 1)) +
         labs(y = "", x = "Indicator\n(Observed value)") +
-        theme_bw() +
         theme(
           legend.position = "bottom",
           panel.grid = element_blank(),
           panel.border = element_blank(),
           axis.title.x = element_text(color = "gray25"),
           legend.location = "plot",
-          legend.key.spacing.y = unit(0, "cm")
+          legend.key.spacing.y = unit(0, "pt")
         )
       assessment_plot
     }
@@ -101,7 +105,7 @@ identificationServer <- function(id) {
         group_by(Class, Indicator) |>
         mutate(n = n()) |>
         filter(n > 1)
-      
+
       ggplot(data = thresh_dat, aes(x = Class, y = Threshold_value)) +
         geom_point(aes(fill = Approach5, shape = Index, size = Flagged)) +
         stat_summary(data = unflagged_thresholds, fun = "mean", geom = "crossbar", linewidth = 0.25) +
@@ -114,15 +118,17 @@ identificationServer <- function(id) {
         scale_shape_manual(values = c(24, 25, 22, 21), name = "Response model index") +
         scale_fill_manual(values = c("#e41a1c", "#377eb8", "#33a02c", "#b2df8a"), name = "Approach") +
         scale_size_manual(values = c(2, 1), name = "Flagged?", labels = c("No", "Yes")) +
-        theme_bw() +
         coord_flip() +
         guides(
           fill = guide_legend(override.aes = list(shape = 21, size = 2), order = 1),
           shape = guide_legend(override.aes = list(fill = "gray", size = 2), order = 2),
-          size = guide_legend(order = 3),
-          color = guide_legend(order = 4)
+          size = guide_legend(order = 3)
         ) +
-        theme(legend.position = "bottom", legend.direction = "vertical") +
+        theme(
+          legend.direction = "vertical", legend.justification = "center",
+          legend.position = "bottom", legend.location = "plot", 
+          legend.spacing.x = unit(0, "pt")
+        ) +
         labs(x = "", y = "")
     }
     
@@ -151,18 +157,41 @@ identificationServer <- function(id) {
         filter(!is.na(Class)) |>
         arrange(Class, Approach, Response_model_form, Response_model_index) 
     }) |>
-      bindEvent(input$Region, input$Mod_Status, input$Flow_Dur, input$Stringency, input$Indicator, input$submit)
+      bindEvent(input$Region, input$Mod_Status, input$Flow_Dur, input$Stringency, input$Indicator, input$submit, ignoreNULL = FALSE)
 
-    
-    output$assessment_plot <- renderPlot({
-      assessment_summary_plot(threshold_data(), obs_table$data) + theme(legend.position = "none")
+    # use reactive functions here so that the reactive dependencies on input
+    # and clear are just on the plot generation, not the rendering  of the
+    # plot to the page. this allows for dynamic resizing etc, without having
+    # to click the submit or clear button again to render the plot
+    assessment_summary_plot_reactive <- reactive({
+      assessment_summary_plot(threshold_data(), obs_table$data)
     }) |>
       bindEvent(input$submit, input$clear)
     
-    output$assessment_plot_detail <- renderPlot({
+    assessment_detail_plot_reactive <- reactive({
       assessment_detail_plot(threshold_data(), obs_table$data)
     }) |>
       bindEvent(input$submit, input$clear)
+    
+    output$assessment_plot <- renderPlot({
+      if (input$submit == 0) {
+        placeholder <- make_placeholder_plot(
+          msg = "Identify thresholds and enter observed values to compare"
+        )
+        return(placeholder)
+      }
+      assessment_summary_plot_reactive()
+    }, res = 96) 
+    
+    output$assessment_plot_detail <- renderPlot({
+      if (input$submit == 0) {
+        placeholder <- make_placeholder_plot(
+          msg = "Identify thresholds and enter observed values to compare"
+        )
+        return(placeholder)
+      }
+      assessment_detail_plot_reactive()
+    }, res = 96) 
     
 
     obs_table <- reactiveValues(data = {
@@ -202,16 +231,37 @@ identificationServer <- function(id) {
         )
       }, 
       editable = list(target = "cell", disable = list(columns = c(0, 1, 2))), 
-      options = list(dom = 't', ordering = FALSE), 
+      options = list(dom = 't', ordering = FALSE, columnDefs = list(list(targets = 3, className = "withPlaceholder"))), 
       rownames = FALSE,
       selection = 'none',
+      fillContainer = TRUE,
       colnames = c("Indicator Type", "Indicator", "Units", "Observed Value")
     ) |>
       bindEvent(obs_table$data)
     
     
     observe({
-      obs_table$data <<- DT::editData(obs_table$data, input$user_input_table_cell_edit, rownames = FALSE)
+      obs_table$data <<- DT::editData(
+        obs_table$data, 
+        input$user_input_table_cell_edit, 
+        rownames = FALSE
+      ) 
+      obs_table$data <- obs_table$data |>
+        dplyr::rowwise() |>
+        dplyr::mutate(
+          Observed_value = dplyr::case_when(
+            Observed_value < 0 ~ NA_real_,
+            Indicator == "ASCI_D" ~ round(Observed_value, 2),
+            Indicator == "ASCI_H" ~ round(Observed_value, 2),
+            Indicator == "CSCI" ~ round(Observed_value, 2),
+            Indicator == "TN" ~ round(min(Observed_value, max_TN), 3),
+            Indicator == "TP" ~ round(min(Observed_value, max_TP), 3),
+            Indicator == "Chl-a" ~ round(min(Observed_value, max_chl), 1),
+            Indicator == "AFDM" ~ round(min(Observed_value, max_afdm), 1),
+            Indicator == "% cover" ~ round(min(Observed_value, max_cov)),
+            .default = Observed_value
+          )
+        )
     }) |>
       bindEvent(input$user_input_table_cell_edit)
     
@@ -221,23 +271,34 @@ identificationServer <- function(id) {
       bindEvent(input$clear)
     
     output$threshold_table <- DT::renderDataTable({
+      if (input$submit == 0) {
+        placeholder <- threshold_data() |>
+          select(
+            Class, Class_fullname, Stringency, Approach, Response_model_detail,
+            Indicator_Type, Indicator, Threshold_value, Flag
+          ) |>
+          filter(1 == 0) # to show headers but no data as a placeholder
+        return(placeholder)
+      }
       threshold_data() |>
         select(
-          Class,
-          Class_fullname, 
-          Stringency,
-          Approach,
-          Response_model_detail,
-          Indicator_Type,
-          Indicator,
-          Threshold_value,
-          Flag
+          Class, Class_fullname, Stringency, Approach, Response_model_detail,
+          Indicator_Type, Indicator, Threshold_value, Flag
         )
     }, 
       selection = 'none', 
+      rownames = FALSE,
+      fillContainer = TRUE,
       options = list(searching = FALSE, bLengthChange = FALSE)
     ) |>
-      bindEvent(input$submit)
+      bindEvent(input$submit, ignoreNULL = FALSE)
+    
+    observe({
+      shinyjs::enable("download_table")
+      shinyjs::enable("download_graphic_summary")
+      shinyjs::enable("download_graphic_detail")
+    }) |>
+      bindEvent(req(input$submit))
     
     output$download_table <- downloadHandler(
       filename = function() {
@@ -246,28 +307,34 @@ identificationServer <- function(id) {
       content = function(file) {
         data = threshold_data() |>
           select(
-            Class,
-            Class_fullname, 
-            Stringency,
-            Approach,
-            Response_model_detail,
-            Indicator_Type,
-            Indicator,
-            Threshold_value,
-            Flag
+            Class, Class_fullname, Stringency, Approach, Response_model_detail,
+            Indicator_Type, Indicator, Threshold_value, Flag
           )
         write.csv(data, file, row.names = FALSE, na = "")
       }
     )
     
-    output$download_graphic <- downloadHandler(
+    output$download_graphic_summary <- downloadHandler(
       filename = function() {
-        paste0("Threshold-Graphic-", Sys.Date(), ".png")
+        paste0("Threshold-Graphic-Summary-", Sys.Date(), ".png")
       },
       content = function(file) {
         cowplot::save_plot(
           file, 
-          plot = assessment_summary_plot(threshold_data(), obs_table$data) + 
+          plot = assessment_summary_plot(threshold_data(), obs_table$data) +
+            theme(plot.background = element_rect(fill = "white", color = NA)), 
+          base_height = 7.5, base_width = 6.5
+        )
+      }
+    )
+    output$download_graphic_detail <- downloadHandler(
+      filename = function() {
+        paste0("Threshold-Graphic-Detail-", Sys.Date(), ".png")
+      },
+      content = function(file) {
+        cowplot::save_plot(
+          file, 
+          plot = assessment_detail_plot(threshold_data(), obs_table$data) + 
             theme(plot.background = element_rect(fill = "white", color = NA)), 
           base_height = 7.5, base_width = 6.5
         )
