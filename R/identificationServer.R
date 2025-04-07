@@ -15,6 +15,7 @@ identificationServer <- function(id) {
     })
     
     assessment_summary_plot <- function(thresh_df, obs_df) {
+      #browser()
       my_thresh_df <- thresh_df |>
         inner_join(obs_df) |>
         mutate(
@@ -57,8 +58,11 @@ identificationServer <- function(id) {
       
       threshold_colors <- c("#1f78b4", "#a6cee3", "#e31a1c", "#cab2d6", "#ff7f00", "#fdbf6f")
       
-      first_panel_rel_height <- length(unique(my_thresh_df$Approach4[my_thresh_df$Indicator_Type == 'Biointegrity'])) / 
-        length(unique(my_thresh_df$Approach4[my_thresh_df$Indicator_Type == 'Eutrophication']))
+      first_panel_rel_height <- min(
+        length(unique(my_thresh_df$Approach4[my_thresh_df$Indicator_Type == 'Biointegrity'])) / 
+          length(unique(my_thresh_df$Approach4[my_thresh_df$Indicator_Type == 'Eutrophication'])),
+        1
+      )
       
       assessment_plot <- ggplot(data = my_thresh_df, aes(x = obs_label, y = Approach4)) +
         geom_tile(aes(fill = Threshold_pass), color = "white", show.legend = TRUE) +
